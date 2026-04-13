@@ -1,0 +1,66 @@
+name: lumen
+description: "Lumen — Application catholique"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Firebase
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.0
+  cloud_firestore: ^5.4.0
+  firebase_analytics: ^11.3.0
+  # Carte (OpenStreetMap — gratuit, aucune clé API)
+  flutter_map: ^7.0.1
+  latlong2: ^0.9.1
+
+  # Localisation GPS
+  geolocator: ^13.0.0
+
+  # Notifications locales
+  flutter_local_notifications: ^18.0.0
+  timezone: ^0.9.4
+
+  # Achats in-app (dons)
+  in_app_purchase: ^3.2.0
+
+  # Requêtes HTTP
+  http: ^1.2.2
+
+  # Ouverture de liens (cartes, navigateur)
+  url_launcher: ^6.3.1
+
+  # Parsing XML/RSS (actualités catholiques)
+  xml: ^6.5.0
+
+  # Persistance locale (progression lecture Bible)
+  shared_preferences: ^2.3.2
+
+  # Connexion sociale
+  google_sign_in: ^6.2.0
+  sign_in_with_apple: ^6.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  ios: true
+  android: false
+  image_path: "assets/app_icon.png"
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/bible-master/json/

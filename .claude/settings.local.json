@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell:*)",
+      "Bash(flutter pub:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(curl -s -o /dev/null -w \"Aleteia: %{http_code}\\\\n\" \"https://fr.aleteia.org/feed/\")",
+      "Bash(curl -s -o /dev/null -w \"Vatican News: %{http_code}\\\\n\" \"https://www.vaticannews.va/fr.rss.xml\")",
+      "Bash(curl -s -o /dev/null -w \"La Croix: %{http_code}\\\\n\" \"https://www.la-croix.com/RSS/GENERAL\")",
+      "Bash(curl -s \"https://fr.aleteia.org/feed/\")",
+      "Bash(curl -s \"https://www.vaticannews.va/fr.rss.xml\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.la-croix.com/rss.xml\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.famillechretienne.fr/rss.xml\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://api.allorigins.win/raw?url=https%3A%2F%2Ffr.aleteia.org%2Ffeed%2F\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://corsproxy.io/?https://fr.aleteia.org/feed/\")",
+      "Bash(curl -s \"https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Ffr.aleteia.org%2Ffeed%2F&count=3\")",
+      "Bash(curl -s \"https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Ffr.aleteia.org%2Ffeed%2F\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); items=d.get\\('items',[]\\); print\\(f'status={d[\\\\\"status\\\\\"]}  articles={len\\(items\\)}'\\); [print\\(f'  - {i[\\\\\"title\\\\\"][:60]}'\\) for i in items[:3]]\")",
+      "Bash(curl -s \"https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.vaticannews.va%2Ffr.rss.xml\")",
+      "WebSearch",
+      "WebFetch(domain:api.aelf.org)",
+      "Bash(firebase --version)",
+      "Bash(firebase login:*)",
+      "Bash(firebase projects:list)",
+      "Bash(firebase use:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(gcloud --version)",
+      "Bash(where gcloud:*)",
+      "Bash(node:*)"
+    ]
+  }
+}

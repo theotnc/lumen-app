@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "390668051355",
+    "project_id": "catho-app-f8a0f",
+    "storage_bucket": "catho-app-f8a0f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390668051355:android:c849b42614a226b7d6f73e",
+        "android_client_info": {
+          "package_name": "com.cathoapp.catho_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoQWA-CUDivQp9tsLRC21VBp_A8Q539g0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

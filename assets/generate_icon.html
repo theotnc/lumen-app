@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Lumen — Générer l'icône</title>
+  <style>
+    body {
+      margin: 0;
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: -apple-system, sans-serif;
+      gap: 24px;
+    }
+    canvas { border-radius: 230px; box-shadow: 0 0 60px rgba(201,168,68,0.4); }
+    button {
+      background: #C9A844;
+      color: #1C1C1E;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    p { color: rgba(255,255,255,0.5); font-size: 13px; margin: 0; }
+  </style>
+</head>
+<body>
+  <canvas id="c" width="1024" height="1024"></canvas>
+  <button onclick="download()">Télécharger app_icon.png</button>
+  <p>Enregistre le fichier sous : catho_app/assets/app_icon.png</p>
+
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+
+    // ── Fond dégradé noir/brun ──────────────────────────────
+    const bg = ctx.createRadialGradient(512, 460, 0, 512, 512, 680);
+    bg.addColorStop(0,   '#1C1200');
+    bg.addColorStop(0.5, '#0D0800');
+    bg.addColorStop(1,   '#000000');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 1024, 1024);
+
+    // ── Halo doré central ──────────────────────────────────
+    const glow = ctx.createRadialGradient(512, 512, 0, 512, 512, 340);
+    glow.addColorStop(0,   'rgba(201,168,68,0.22)');
+    glow.addColorStop(0.5, 'rgba(201,168,68,0.08)');
+    glow.addColorStop(1,   'rgba(201,168,68,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, 1024, 1024);
+
+    // ── Poisson ichthys ────────────────────────────────────
+    ctx.strokeStyle = '#C9A844';
+    ctx.lineWidth = 46;
+    ctx.lineCap  = 'round';
+    ctx.lineJoin = 'round';
+
+    // Ombre/lueur derrière le trait
+    ctx.shadowColor = 'rgba(201,168,68,0.55)';
+    ctx.shadowBlur  = 28;
+
+    // Arc supérieur du corps
+    ctx.beginPath();
+    ctx.moveTo(252, 512);
+    ctx.bezierCurveTo(338, 364, 628, 364, 726, 455);
+    ctx.stroke();
+
+    // Arc inférieur du corps
+    ctx.beginPath();
+    ctx.moveTo(252, 512);
+    ctx.bezierCurveTo(338, 660, 628, 660, 726, 569);
+    ctx.stroke();
+
+    // Queue — deux lignes qui se croisent (style ichthys classique)
+    ctx.beginPath();
+    ctx.moveTo(726, 455);
+    ctx.lineTo(834, 648);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(726, 569);
+    ctx.lineTo(834, 376);
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+  </script>
+
+  <script>
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'app_icon.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
