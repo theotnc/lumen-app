@@ -211,7 +211,7 @@ class ProfileScreen extends StatelessWidget {
                       iconColor: AppTheme.sublabel,
                       label: 'Nous contacter',
                       onTap: () => launchUrl(
-                        Uri.parse('mailto:theotnc@gmail.com?subject=Lumen%20-%20Contact'),
+                        Uri.parse('mailto:theotnc@gmail.com?subject=Refuge%20-%20Contact'),
                         mode: LaunchMode.externalApplication,
                       ),
                     ),

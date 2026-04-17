@@ -225,6 +225,32 @@ class _PrayersFeedState extends State<_PrayersFeed> {
   }
 }
 
+void _showReportDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: AppTheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text('Signaler ce contenu',
+          style: TextStyle(color: AppTheme.label, fontSize: 16)),
+      content: const Text(
+        'Ce contenu sera examiné par notre équipe. Merci de nous aider à maintenir un espace bienveillant.',
+        style: TextStyle(color: AppTheme.sublabel, fontSize: 14, height: 1.5),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: Text('Annuler', style: TextStyle(color: AppTheme.sublabel)),
+        ),
+        TextButton(
+          onPressed: () { Navigator.pop(ctx); },
+          child: const Text('Signaler', style: TextStyle(color: Colors.redAccent)),
+        ),
+      ],
+    ),
+  );
+}
+
 // ── Carte prière ──────────────────────────────────────────
 class _PrayerCard extends StatelessWidget {
   final CommunityPrayer prayer;
@@ -283,6 +309,11 @@ class _PrayerCard extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.35))),
                   ],
                 ),
+              ),
+              GestureDetector(
+                onTap: () => _showReportDialog(context),
+                child: Icon(Icons.flag_outlined, size: 16,
+                    color: Colors.white.withValues(alpha: 0.25)),
               ),
             ],
           ),
@@ -472,8 +503,18 @@ class _ForumCard extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.chevron_right_rounded,
-                size: 18, color: Colors.white.withValues(alpha: 0.20)),
+            Row(
+              children: [
+                Icon(Icons.chevron_right_rounded,
+                    size: 18, color: Colors.white.withValues(alpha: 0.20)),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: () => _showReportDialog(context),
+                  child: Icon(Icons.flag_outlined, size: 14,
+                      color: Colors.white.withValues(alpha: 0.20)),
+                ),
+              ],
+            ),
           ],
         ),
       ),

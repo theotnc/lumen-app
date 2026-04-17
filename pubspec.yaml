@@ -1,5 +1,5 @@
-name: lumen
-description: "Lumen — Application catholique"
+name: refuge
+description: "Refuge — Compagnon Catholique"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -46,6 +46,7 @@ dependencies:
   # Connexion sociale
   google_sign_in: ^6.2.0
   sign_in_with_apple: ^6.1.0
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:

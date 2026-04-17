@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import '../../core/theme.dart';
@@ -22,11 +23,47 @@ class _DonationScreenState extends State<DonationScreen> {
   bool _purchasing = false;
   bool _success = false;
   String? _error;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   @override
   void initState() {
     super.initState();
+    _subscription = InAppPurchase.instance.purchaseStream.listen(
+      _onPurchaseUpdate,
+      onError: (_) {
+        if (mounted) setState(() { _error = 'Erreur lors du paiement.'; _purchasing = false; });
+      },
+    );
     _loadProducts();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  void _onPurchaseUpdate(List<PurchaseDetails> purchases) {
+    for (final purchase in purchases) {
+      switch (purchase.status) {
+        case PurchaseStatus.purchased:
+        case PurchaseStatus.restored:
+          InAppPurchase.instance.completePurchase(purchase);
+          if (mounted) setState(() { _success = true; _purchasing = false; });
+          break;
+        case PurchaseStatus.error:
+          if (mounted) setState(() { _error = 'Erreur lors du paiement.'; _purchasing = false; });
+          break;
+        case PurchaseStatus.canceled:
+          if (mounted) setState(() => _purchasing = false);
+          break;
+        default:
+          break;
+      }
+      if (purchase.pendingCompletePurchase) {
+        InAppPurchase.instance.completePurchase(purchase);
+      }
+    }
   }
 
   Future<void> _loadProducts() async {
@@ -48,17 +85,10 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   Future<void> _purchase(ProductDetails product) async {
-    setState(() {
-      _purchasing = true;
-      _error = null;
-    });
-    try {
-      final param = PurchaseParam(productDetails: product);
-      await InAppPurchase.instance.buyConsumable(purchaseParam: param);
-      if (mounted) setState(() { _success = true; _purchasing = false; });
-    } catch (_) {
-      if (mounted) setState(() { _error = 'Erreur lors du paiement.'; _purchasing = false; });
-    }
+    setState(() { _purchasing = true; _error = null; });
+    final param = PurchaseParam(productDetails: product);
+    await InAppPurchase.instance.buyConsumable(purchaseParam: param);
+    // Le résultat arrive via purchaseStream → _onPurchaseUpdate
   }
 
   @override
@@ -202,7 +232,7 @@ class _DonationHeader extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // Logo Lumen
+          // Logo Refuge
           Container(
             width: 80,
             height: 80,

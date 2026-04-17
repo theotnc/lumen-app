@@ -26,7 +26,7 @@ class AiService {
   static const _url = 'https://api.groq.com/openai/v1/chat/completions';
 
   static const _systemPrompt = '''
-Tu es un assistant spirituel catholique bienveillant intégré dans l'application Lumen.
+Tu es un assistant spirituel catholique bienveillant intégré dans l'application Refuge.
 Ton rôle est d'aider les utilisateurs à découvrir et comprendre la foi catholique, en particulier les personnes n'ayant jamais eu d'éducation religieuse.
 
 Tes règles :

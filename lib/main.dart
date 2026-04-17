@@ -25,7 +25,7 @@ class CathoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lumen',
+      title: 'Refuge',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.light, // app toujours en mode sombre custom
@@ -118,7 +118,7 @@ class _SplashScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'Lumen',
+                  'Refuge',
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.w800,

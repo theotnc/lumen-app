@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 20, color: AppTheme.primary),
                   const SizedBox(width: 8),
                   Text(
-                    'Lumen',
+                    'Refuge',
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,

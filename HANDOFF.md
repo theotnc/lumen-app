@@ -1,7 +1,7 @@
-# Lumen - Handoff Mac
+# Refuge - Handoff Mac
 
 ## Contexte
-App Flutter catholique "Lumen - Compagnon Catholique", prête pour soumission App Store.
+App Flutter catholique "Refuge - Compagnon Catholique", prête pour soumission App Store.
 Développée sur Windows, build final sur Mac via Xcode.
 
 ## État actuel
@@ -9,7 +9,7 @@ Développée sur Windows, build final sur Mac via Xcode.
 - ✅ Bundle ID : `com.cathoapp.lumen`
 - ✅ Firebase configuré (Auth, Firestore, Google Sign-In, Apple Sign-In)
 - ✅ 4 produits in-app purchase créés dans App Store Connect
-- ✅ App créée dans App Store Connect ("Lumen - Compagnon Catholique")
+- ✅ App créée dans App Store Connect ("Refuge - Compagnon Catholique")
 - ✅ Politique de confidentialité : https://lumenprivacy.netlify.app
 - ✅ Compte de test Firebase créé : test@lumen-app.fr
 - ✅ Code sur GitHub : https://github.com/theotnc/lumen-app
@@ -19,8 +19,8 @@ Développée sur Windows, build final sur Mac via Xcode.
 - **Bundle ID** : `com.cathoapp.lumen`
 - **Firebase project** : `catho-app-f8a0f`
 - **Apple Team ID** : `ZFPBJ3LKA3`
-- **App Store Connect** : "Lumen - Compagnon Catholique" (ID 6762096179)
-- **Compte de test** : test@lumen-app.fr / Lumen2026!
+- **App Store Connect** : "Refuge - Compagnon Catholique" (ID 6762096179)
+- **Compte de test** : test@lumen-app.fr / Refuge2026!
 - **Privacy Policy** : https://lumenprivacy.netlify.app
 - **Support URL** : https://lumenprivacy.netlify.app
 - **Contact** : txrnink@pm.me
