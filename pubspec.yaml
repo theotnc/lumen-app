@@ -43,6 +43,12 @@ dependencies:
   # Persistance locale (progression lecture Bible)
   shared_preferences: ^2.3.2
 
+  # Cache tuiles carte
+  cached_network_image: ^3.3.0
+
+  # Clustering marqueurs carte
+  flutter_map_marker_cluster: ^1.3.0
+
   # Connexion sociale
   google_sign_in: ^6.2.0
   sign_in_with_apple: ^6.1.0

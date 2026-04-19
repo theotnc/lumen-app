@@ -130,15 +130,20 @@ class _ChurchDetailScreenState extends State<ChurchDetailScreen> {
 
                   // ── Informations ─────────────────────────────
                   _SectionGroup(title: 'Informations', children: [
-                    _InfoRow(
-                        icon: Icons.location_on_outlined,
-                        label: c.fullAddress),
-                    _InfoRow(
-                        icon: Icons.account_balance_outlined,
-                        label: 'Diocèse de ${c.diocese}'),
-                    _InfoRow(
-                        icon: Icons.map_outlined,
-                        label: '${c.departement} · ${c.region}'),
+                    if (c.adresse.isNotEmpty || c.ville.isNotEmpty)
+                      _InfoRow(
+                          icon: Icons.location_on_outlined,
+                          label: c.fullAddress),
+                    if (c.diocese.isNotEmpty)
+                      _InfoRow(
+                          icon: Icons.account_balance_outlined,
+                          label: 'Diocèse de ${c.diocese}'),
+                    if (c.departement.isNotEmpty || c.region.isNotEmpty)
+                      _InfoRow(
+                          icon: Icons.map_outlined,
+                          label: [c.departement, c.region]
+                              .where((s) => s.isNotEmpty)
+                              .join(' · ')),
                     if (c.telephone != null)
                       _InfoRow(
                           icon: Icons.phone_outlined,
@@ -148,7 +153,14 @@ class _ChurchDetailScreenState extends State<ChurchDetailScreen> {
                       _InfoRow(
                           icon: Icons.language,
                           label: c.siteWeb!,
-                          isLink: true),
+                          isLink: true,
+                          linkUrl: c.siteWeb),
+                    // Fallback si aucune info disponible
+                    if (c.adresse.isEmpty && c.ville.isEmpty &&
+                        c.diocese.isEmpty && c.telephone == null && c.siteWeb == null)
+                      _InfoRow(
+                          icon: Icons.info_outline_rounded,
+                          label: 'Aucune information disponible'),
                   ]),
 
                   // ── Horaires ─────────────────────────────────
@@ -594,12 +606,21 @@ class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isLink;
+  final String? linkUrl; // URL explicite (tel:, https:, …)
   const _InfoRow(
-      {required this.icon, required this.label, this.isLink = false});
+      {required this.icon, required this.label, this.isLink = false, this.linkUrl});
+
+  Future<void> _launch() async {
+    final raw = linkUrl ?? label;
+    final uri = raw.startsWith('http') ? Uri.parse(raw) : Uri.parse('tel:$raw');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final content = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       child: Row(
         children: [
@@ -621,6 +642,8 @@ class _InfoRow extends StatelessWidget {
         ],
       ),
     );
+    if (!isLink) return content;
+    return GestureDetector(onTap: _launch, child: content);
   }
 }
 
@@ -685,7 +708,7 @@ class _SheetLabel extends StatelessWidget {
       );
 }
 
-class _SheetInput extends StatelessWidget {
+class _SheetInput extends StatefulWidget {
   final String value;
   final String hint;
   final TextInputType keyboardType;
@@ -699,6 +722,25 @@ class _SheetInput extends StatelessWidget {
   });
 
   @override
+  State<_SheetInput> createState() => _SheetInputState();
+}
+
+class _SheetInputState extends State<_SheetInput> {
+  late final TextEditingController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = TextEditingController(text: widget.value);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -708,12 +750,12 @@ class _SheetInput extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.10), width: 0.5),
       ),
       child: TextField(
-        controller: TextEditingController(text: value),
-        keyboardType: keyboardType,
-        onChanged: onChanged,
+        controller: _ctrl,
+        keyboardType: widget.keyboardType,
+        onChanged: widget.onChanged,
         style: const TextStyle(color: AppTheme.label, fontSize: 14),
         decoration: InputDecoration(
-          hintText: hint,
+          hintText: widget.hint,
           hintStyle: TextStyle(
               color: Colors.white.withValues(alpha: 0.25), fontSize: 14),
           border: InputBorder.none,

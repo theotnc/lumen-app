@@ -1,7 +1,9 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import '../../core/models/church.dart';
 import '../../core/services/church_service.dart';
@@ -264,12 +266,12 @@ class _ChurchesScreenState extends State<ChurchesScreen>
         ),
       ),
       children: [
-        // Tuiles Carto dark — sans retinaMode (divise par 2 la bande passante)
-        // Sans _darkerTile ColorFiltered (supprime un calque de composition par tuile)
+        // Tuiles Carto dark — avec cache disque (30 jours, max 10 000 tuiles)
         TileLayer(
           urlTemplate:
               'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.cathoapp.bible',
+          tileProvider: _CachedTileProvider(),
         ),
 
         // Halo de rayon — centré sur le centre actif (ville ou GPS)
@@ -286,20 +288,28 @@ class _ChurchesScreenState extends State<ChurchesScreen>
             ],
           ),
 
-        // Marqueurs églises
-        MarkerLayer(
-          markers: displayChurches.map((church) {
-            final isSel = _selected?.id == church.id;
-            return Marker(
-              point: church.latLng,
-              width: isSel ? 56 : 42,
-              height: isSel ? 56 : 42,
-              child: GestureDetector(
-                onTap: () => _select(church),
-                child: _ChurchMarker(selected: isSel),
-              ),
-            );
-          }).toList(),
+        // Marqueurs églises avec clustering automatique
+        MarkerClusterLayerWidget(
+          options: MarkerClusterLayerOptions(
+            maxClusterRadius: 48,
+            size: const Size(42, 42),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(50),
+            markers: displayChurches.map((church) {
+              final isSel = _selected?.id == church.id;
+              return Marker(
+                point: church.latLng,
+                width: isSel ? 56 : 42,
+                height: isSel ? 56 : 42,
+                child: GestureDetector(
+                  onTap: () => _select(church),
+                  child: _ChurchMarker(selected: isSel),
+                ),
+              );
+            }).toList(),
+            builder: (context, markers) =>
+                _ClusterMarker(count: markers.length),
+          ),
         ),
 
         // Marqueur utilisateur pulsant — RepaintBoundary pour isoler l'animation
@@ -1089,6 +1099,51 @@ class _SelectedChurchCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Cache tuiles CartoDB (30 jours, max 10 000 tuiles) ────
+class _CachedTileProvider extends TileProvider {
+  @override
+  ImageProvider getImage(TileCoordinates coordinates, TileLayer options) {
+    return CachedNetworkImageProvider(
+      getTileUrl(coordinates, options),
+      cacheKey: 'map_${coordinates.z}_${coordinates.x}_${coordinates.y}',
+    );
+  }
+}
+
+// ── Marqueur de cluster ───────────────────────────────────
+class _ClusterMarker extends StatelessWidget {
+  final int count;
+  const _ClusterMarker({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppTheme.primary,
+        border: Border.all(color: Colors.white, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primary.withValues(alpha: 0.45),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Center(
+        child: Text(
+          count > 99 ? '99+' : '$count',
+          style: const TextStyle(
+            color: Color(0xFF1C1C1E),
+            fontWeight: FontWeight.w800,
+            fontSize: 13,
+          ),
         ),
       ),
     );

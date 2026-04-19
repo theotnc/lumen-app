@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' show cos, pi;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show compute;
@@ -7,9 +8,76 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import '../models/church.dart';
 
-// Fonction top-level requise par compute() (isolate background)
+// ── Fonctions top-level pour compute() ───────────────────────────────────────
+// Toutes les fonctions passées à compute() doivent être top-level (pas de closure).
+
 List<Map<String, dynamic>> _decodeJson(String raw) =>
     (jsonDecode(raw) as List<dynamic>).cast<Map<String, dynamic>>();
+
+/// Paramètres du filtrage distance (envoyés dans l'isolate via compute).
+class _RadiusFilterParams {
+  final List<Church> candidates;
+  final double lat;
+  final double lon;
+  final double radiusKm;
+  const _RadiusFilterParams(this.candidates, this.lat, this.lon, this.radiusKm);
+}
+
+/// Filtre + tri par distance dans un isolate background — évite le jank UI.
+List<Church> _isolateFilterByRadius(_RadiusFilterParams p) {
+  const dist = Distance();
+  final center = LatLng(p.lat, p.lon);
+  final result = p.candidates
+      .where((c) => dist.as(LengthUnit.Kilometer, center, c.latLng) <= p.radiusKm)
+      .toList()
+    ..sort((a, b) => dist
+        .as(LengthUnit.Kilometer, center, a.latLng)
+        .compareTo(dist.as(LengthUnit.Kilometer, center, b.latLng)));
+  return result;
+}
+
+// ── Index spatial — grille lat/lon ────────────────────────────────────────────
+/// Divise l'espace en cellules de 0.1° (~11 km lat × ~7 km lon en France).
+/// Une requête rayon R ne parcourt que les cellules qui se superposent au cercle,
+/// réduisant les calculs de O(33 000) à O(quelques centaines).
+class _SpatialGrid {
+  static const double _cellDeg = 0.1;
+
+  final _grid = <String, List<Church>>{};
+
+  void build(List<Church> churches) {
+    _grid.clear();
+    for (final c in churches) {
+      _grid.putIfAbsent(_key(c.latitude, c.longitude), () => []).add(c);
+    }
+  }
+
+  static String _key(double lat, double lon) =>
+      '${(lat / _cellDeg).floor()}_${(lon / _cellDeg).floor()}';
+
+  /// Renvoie les candidats dans les cellules intersectant le cercle [center, radiusKm].
+  /// Le filtre de distance exact est appliqué ensuite (dans l'isolate).
+  List<Church> candidates(LatLng center, double radiusKm) {
+    // Marge d'une cellule pour ne pas rater les bords
+    final latDelta = radiusKm / 111.0 + _cellDeg;
+    final lonDelta =
+        radiusKm / (111.0 * cos(center.latitude * pi / 180.0)) + _cellDeg;
+
+    final latMin = ((center.latitude - latDelta) / _cellDeg).floor();
+    final latMax = ((center.latitude + latDelta) / _cellDeg).floor();
+    final lonMin = ((center.longitude - lonDelta) / _cellDeg).floor();
+    final lonMax = ((center.longitude + lonDelta) / _cellDeg).floor();
+
+    final result = <Church>[];
+    for (var la = latMin; la <= latMax; la++) {
+      for (var lo = lonMin; lo <= lonMax; lo++) {
+        final cell = _grid['${la}_$lo'];
+        if (cell != null) result.addAll(cell);
+      }
+    }
+    return result;
+  }
+}
 
 class ChurchService {
   static final ChurchService _instance = ChurchService._internal();
@@ -19,8 +87,9 @@ class ChurchService {
   final _db = FirebaseFirestore.instance;
   final _distance = const Distance();
 
-  // ── Bundle JSON (toutes les églises de France, offline) ───
+  // ── Bundle JSON + index spatial ──────────────────────────
   List<Church>? _bundledChurches;
+  final _grid = _SpatialGrid();
 
   Future<void> warmUpBundle() => _loadBundledChurches();
 
@@ -33,6 +102,7 @@ class ChurchService {
       _bundledChurches = maps
           .map((m) => Church.fromMap(m['id'] as String, m))
           .toList();
+      _grid.build(_bundledChurches!); // Index spatial construit une seule fois
       return _bundledChurches!;
     } catch (_) {
       return [];
@@ -226,10 +296,15 @@ class ChurchService {
       '${c.latitude.toStringAsFixed(2)}_${c.longitude.toStringAsFixed(2)}_${r.toInt()}';
 
   // ── Données locales synchrones (affichage immédiat) ───────
-  // Utilise le bundle s'il est déjà chargé, sinon les 12 hardcodées
+  // Utilise la grille spatiale si le bundle est chargé (O(~200) vs O(33K)).
   List<Church> fetchLocalImmediate(LatLng position, double radiusKm) {
-    final source = _bundledChurches ?? _localChurches;
-    return source
+    if (_bundledChurches != null) {
+      final candidates = _grid.candidates(position, radiusKm);
+      return candidates
+          .where((c) => _distanceKm(position, c.latLng) <= radiusKm)
+          .toList();
+    }
+    return _localChurches
         .where((c) => _distanceKm(position, c.latLng) <= radiusKm)
         .toList();
   }
@@ -285,11 +360,17 @@ class ChurchService {
     required LatLng position,
     required double radiusKm,
   }) async {
-    // 1. Bundle local (33 000 églises France, offline, instantané après premier chargement)
+    // 1. Bundle local — grille spatiale → isolate pour le filtre distance précis
     final bundled = await _loadBundledChurches();
-    final local = bundled.isEmpty
-        ? _localChurches.where((c) => _distanceKm(position, c.latLng) <= radiusKm).toList()
-        : bundled.where((c) => _distanceKm(position, c.latLng) <= radiusKm).toList();
+    final candidates = bundled.isEmpty
+        ? _localChurches
+        : _grid.candidates(position, radiusKm); // O(~200) au lieu de O(33K)
+
+    final local = await compute(
+      _isolateFilterByRadius,
+      _RadiusFilterParams(
+          candidates, position.latitude, position.longitude, radiusKm),
+    );
 
     // 2. Firestore (données enrichies : horaires, infos communautaires)
     List<Church> firestore = [];
@@ -314,15 +395,13 @@ class ChurchService {
       } catch (_) {}
     }
 
-    // 4. Fusion : Firestore > bundle/local > OSM
+    // 4. Fusion : Firestore > bundle > OSM
     final seen = <String>{};
     final merged = <Church>[];
     for (final c in [...firestore, ...local, ...osm]) {
-      if (seen.contains(c.id)) continue;
-      seen.add(c.id);
-      merged.add(c);
+      if (seen.add(c.id)) merged.add(c);
     }
-
+    // Déjà trié par _isolateFilterByRadius, Firestore en tête → re-tri global
     merged.sort((a, b) =>
         _distanceKm(position, a.latLng)
             .compareTo(_distanceKm(position, b.latLng)));
