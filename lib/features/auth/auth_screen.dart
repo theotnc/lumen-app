@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/theme.dart';
 import 'auth_widgets.dart';
@@ -461,36 +462,28 @@ class _AuthScreenState extends State<AuthScreen> {
 
   // ── Boutons sociaux — pas de BackdropFilter imbriqué ──────
   Widget _buildSocialRow() {
-    return Row(children: [
-      Expanded(
-        child: _SocialBtn(
-          onTap: _loading ? null : _google,
-          label: 'Google',
-          icon: const Text(
-            'G',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF4285F4),
-            ),
+    return Column(children: [
+      _SocialBtn(
+        onTap: _loading ? null : _google,
+        label: 'Google',
+        icon: const Text(
+          'G',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF4285F4),
           ),
         ),
       ),
-      const SizedBox(width: 12),
-      Expanded(
-        child: _SocialBtn(
-          onTap: (_loading || !_appleAvailable) ? null : _apple,
-          label: 'Apple',
-          dimmed: !_appleAvailable,
-          icon: Icon(
-            Icons.apple,
-            size: 22,
-            color: _appleAvailable
-                ? Colors.white
-                : Colors.white.withValues(alpha: 0.30),
-          ),
+      if (_appleAvailable) ...[
+        const SizedBox(height: 12),
+        SignInWithAppleButton(
+          onPressed: _loading ? () {} : _apple,
+          style: SignInWithAppleButtonStyle.black,
+          borderRadius: BorderRadius.circular(14),
+          height: 50,
         ),
-      ),
+      ],
     ]);
   }
 }
