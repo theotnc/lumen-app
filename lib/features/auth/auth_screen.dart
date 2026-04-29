@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'dart:ui';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/theme.dart';
 import 'auth_widgets.dart';
@@ -47,8 +44,6 @@ class _AuthScreenState extends State<AuthScreen> {
       _passSignCtrl.text.length >= 6 &&
       _passSignCtrl.text == _confirmCtrl.text;
 
-  bool get _appleAvailable => !kIsWeb && (Platform.isIOS || Platform.isMacOS);
-
   Future<void> _run(Future<void> Function() action) async {
     FocusScope.of(context).unfocus();
     setState(() { _loading = true; _error = null; });
@@ -66,9 +61,6 @@ class _AuthScreenState extends State<AuthScreen> {
   Future<void> _signUp() => _run(
       () => AuthService().signUp(
           _emailSignCtrl.text.trim(), _passSignCtrl.text, _nameCtrl.text.trim()));
-  Future<void> _google() => _run(() => AuthService().signInWithGoogle());
-  Future<void> _apple()  => _run(() => AuthService().signInWithApple());
-
   Future<void> _forgot() async {
     final ctrl = TextEditingController(text: _emailCtrl.text.trim());
     final ok = await showDialog<bool>(
@@ -246,31 +238,8 @@ class _AuthScreenState extends State<AuthScreen> {
           child: _buildTabSelector(),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: _tab == 0 ? _buildLoginForm() : _buildSignupForm(),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-          child: Row(children: [
-            Expanded(
-                child: Divider(color: Colors.white.withValues(alpha: 0.12))),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              child: Text(
-                'ou continuer avec',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.35),
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            Expanded(
-                child: Divider(color: Colors.white.withValues(alpha: 0.12))),
-          ]),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-          child: _buildSocialRow(),
         ),
       ],
     );
