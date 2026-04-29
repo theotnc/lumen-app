@@ -429,32 +429,6 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  // ── Boutons sociaux — pas de BackdropFilter imbriqué ──────
-  Widget _buildSocialRow() {
-    return Column(children: [
-      _SocialBtn(
-        onTap: _loading ? null : _google,
-        label: 'Google',
-        icon: const Text(
-          'G',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF4285F4),
-          ),
-        ),
-      ),
-      if (_appleAvailable) ...[
-        const SizedBox(height: 12),
-        SignInWithAppleButton(
-          onPressed: _loading ? () {} : _apple,
-          style: SignInWithAppleButtonStyle.black,
-          borderRadius: BorderRadius.circular(14),
-          height: 50,
-        ),
-      ],
-    ]);
-  }
 }
 
 // ── Tab pill ──────────────────────────────────────────────
@@ -556,55 +530,6 @@ class _PrimaryBtn extends StatelessWidget {
                     letterSpacing: -0.2,
                   ),
                 ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Bouton social — fond solide, pas de BackdropFilter ────
-class _SocialBtn extends StatelessWidget {
-  final VoidCallback? onTap;
-  final String label;
-  final Widget icon;
-  final bool dimmed;
-  const _SocialBtn({
-    required this.onTap,
-    required this.label,
-    required this.icon,
-    this.dimmed = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final active = onTap != null;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: active ? 0.12 : 0.04),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: active ? 0.22 : 0.08),
-            width: 0.5,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            icon,
-            const SizedBox(width: 7),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: dimmed ? 0.25 : 0.80),
-                letterSpacing: -0.1,
-              ),
-            ),
-          ],
         ),
       ),
     );
