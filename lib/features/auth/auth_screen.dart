@@ -263,11 +263,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 color: Colors.white.withValues(alpha: 0.05), width: 0.5),
           ),
         ),
-        child: kIsWeb
-            // Web : pas de BackdropFilter — contenu toujours visible
-            ? Container(decoration: glassDecoration, child: content)
-            // Mobile : blur sur calque séparé, contenu au-dessus
-            : Stack(children: [
+        child: Stack(children: [
                 Positioned.fill(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
