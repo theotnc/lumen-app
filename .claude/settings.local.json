@@ -26,7 +26,10 @@
       "Bash(firebase deploy:*)",
       "Bash(gcloud --version)",
       "Bash(where gcloud:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m pip install graphifyy)",
+      "Bash(python3 -m pip install graphifyy)"
     ]
   }
 }

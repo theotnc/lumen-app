@@ -78,6 +78,25 @@ class LocalBibleService {
     );
   }
 
+  // MARK: - Tous les chapitres d'un livre (lecture continue)
+
+  Future<List<BiblePassage>> getAllChapters(String bookId) async {
+    await _ensureLoaded();
+    final book = _raw!.firstWhere((b) => b.abbrev == bookId);
+    final info = _bookInfo(bookId);
+    return book.chapters.asMap().entries.map((e) {
+      final chNum = e.key + 1;
+      final content = e.value.asMap().entries
+          .map((v) => '${v.key + 1}. ${v.value}')
+          .join('\n\n');
+      return BiblePassage(
+        id: '$bookId.$chNum',
+        reference: '${info.name} $chNum',
+        content: content,
+      );
+    }).toList();
+  }
+
   // MARK: - Recherche
 
   Future<List<BibleSearchVerse>> search(String query) async {

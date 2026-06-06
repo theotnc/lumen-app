@@ -125,7 +125,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
               child: Column(children: [
                 const SizedBox(height: 44),
-                _buildLogo(),
+                Center(child: _buildLogo()),
                 const SizedBox(height: 36),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -142,7 +142,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   // ── Logo ──────────────────────────────────────────────────
   Widget _buildLogo() {
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Container(
         width: 100,
         height: 100,
@@ -172,18 +172,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 width: 1.0,
               ),
             ),
-            child: Center(
-              child: ColorFiltered(
-                colorFilter: const ColorFilter.mode(
-                  AppTheme.primary,
-                  BlendMode.srcIn,
-                ),
-                child: Image.asset(
-                  'assets/logo.webp',
-                  width: 54,
-                  height: 54,
-                  fit: BoxFit.contain,
-                ),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Image.asset(
+                'assets/logo_transparent.png',
+                fit: BoxFit.contain,
               ),
             ),
           ),

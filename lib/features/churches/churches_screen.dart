@@ -270,7 +270,7 @@ class _ChurchesScreenState extends State<ChurchesScreen>
         TileLayer(
           urlTemplate:
               'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-          userAgentPackageName: 'com.cathoapp.bible',
+          userAgentPackageName: 'com.cathoapp.lumen',
           tileProvider: _CachedTileProvider(),
         ),
 

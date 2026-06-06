@@ -6,7 +6,8 @@ import '../../core/services/local_bible_service.dart';
 import '../../core/services/bible_progress_service.dart';
 import '../../core/theme.dart';
 import 'book_list_screen.dart';
-import 'chapter_screen.dart';
+import 'reading_screen.dart';
+import '../audio_bible/audio_bible_screen.dart';
 
 class BibleScreen extends StatefulWidget {
   const BibleScreen({super.key});
@@ -72,7 +73,7 @@ class _BibleScreenState extends State<BibleScreen> {
   void _openBook(String abbrev) {
     final book = _books.firstWhere((b) => b.id == abbrev, orElse: () => _books.first);
     Navigator.push(context, MaterialPageRoute(
-      builder: (_) => ChapterScreen(book: book),
+      builder: (_) => ReadingScreen(book: book),
     )).then((_) => _loadProgress());
   }
 
@@ -158,6 +159,14 @@ class _BibleScreenState extends State<BibleScreen> {
             _buildResumeCard(),
           ],
 
+          // ── Bible Audio ─────────────────────────────────
+          _AudioBibleCard(
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+              builder: (_) => AudioBibleScreen(books: _books),
+            )),
+          ),
+          const SizedBox(height: 24),
+
           // ── Par où commencer ────────────────────────────
           _SectionLabel(text: 'PAR OÙ COMMENCER'),
           const SizedBox(height: 10),
@@ -216,7 +225,7 @@ class _BibleScreenState extends State<BibleScreen> {
           orElse: () => _books.first,
         );
         Navigator.push(context, MaterialPageRoute(
-          builder: (_) => ChapterScreen(book: book),
+          builder: (_) => ReadingScreen(book: book),
         )).then((_) => _loadProgress());
       },
       child: Container(
@@ -323,6 +332,79 @@ class _BibleScreenState extends State<BibleScreen> {
             );
           },
           childCount: _results.length,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Carte Bible Audio ─────────────────────────────────────
+class _AudioBibleCard extends StatelessWidget {
+  final VoidCallback onTap;
+  const _AudioBibleCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppTheme.primary.withValues(alpha: 0.14),
+              AppTheme.primary.withValues(alpha: 0.06),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppTheme.primary.withValues(alpha: 0.28),
+            width: 0.8,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(Icons.headphones_rounded,
+                  color: AppTheme.primary, size: 24),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Bible Audio',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.label,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    'Louis Segond · 66 livres',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppTheme.primary.withValues(alpha: 0.70),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios_rounded,
+                size: 14, color: Colors.white.withValues(alpha: 0.35)),
+          ],
         ),
       ),
     );

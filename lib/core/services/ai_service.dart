@@ -25,6 +25,17 @@ class AiService {
 
   static const _url = 'https://api.groq.com/openai/v1/chat/completions';
 
+  // ── Rate limiting ─────────────────────────────────────────
+  static const _maxMessagesPerSession = 30;
+  static const _minSecondsBetweenCalls = 4;
+
+  int _sessionCount = 0;
+  DateTime? _lastCallTime;
+
+  bool get _keyConfigured =>
+      AppConfig.groqApiKey.isNotEmpty &&
+      AppConfig.groqApiKey.startsWith('gsk_');
+
   static const _systemPrompt = '''
 Tu es un assistant spirituel catholique bienveillant intégré dans l'application Refuge.
 Ton rôle est d'aider les utilisateurs à découvrir et comprendre la foi catholique, en particulier les personnes n'ayant jamais eu d'éducation religieuse.
@@ -43,16 +54,28 @@ Tes règles :
 ''';
 
   // ── Envoi d'un message ────────────────────────────────────
-  // Retourne (contenu, isError)
   Future<(String, bool)> sendMessage(List<ChatMessage> history) async {
-    if (AppConfig.groqApiKey.contains('REMPLACE')) {
-      return ('Clé API Groq manquante. Configure ta clé dans lib/core/config.dart.', true);
+    if (!_keyConfigured) {
+      return ('L\'assistant spirituel n\'est pas encore disponible.', true);
     }
 
-    // Construction du tableau de messages
+    if (_sessionCount >= _maxMessagesPerSession) {
+      return ('Vous avez atteint la limite de messages pour cette session. Relancez l\'application pour continuer.', true);
+    }
+
+    if (_lastCallTime != null) {
+      final elapsed = DateTime.now().difference(_lastCallTime!).inSeconds;
+      if (elapsed < _minSecondsBetweenCalls) {
+        final wait = _minSecondsBetweenCalls - elapsed;
+        return ('Patientez encore $wait seconde${wait > 1 ? 's' : ''} avant d\'envoyer un nouveau message.', true);
+      }
+    }
+
+    _lastCallTime = DateTime.now();
+    _sessionCount++;
+
     final messages = <Map<String, String>>[
       {'role': 'system', 'content': _systemPrompt},
-      // On garde les 10 derniers échanges pour le contexte
       ...history.takeLast(10).map((m) => {
         'role': m.role,
         'content': m.content,
@@ -80,16 +103,18 @@ Tes règles :
         return (text, false);
       }
       if (resp.statusCode == 401) {
-        return ('Clé API invalide. Vérifie ta clé Groq dans config.dart.', true);
+        return ('Clé API invalide. Contactez le support.', true);
       }
       if (resp.statusCode == 429) {
-        return ('Trop de questions envoyées. Attends quelques secondes et réessaie.', true);
+        return ('Trop de questions envoyées. Attendez quelques secondes et réessayez.', true);
       }
-      return ('Une erreur est survenue (code ${resp.statusCode}). Réessaie dans un moment.', true);
+      return ('Une erreur est survenue. Réessayez dans un moment.', true);
     } on Exception {
-      return ('Impossible de contacter l\'assistant. Vérifie ta connexion internet.', true);
+      return ('Impossible de contacter l\'assistant. Vérifiez votre connexion internet.', true);
     }
   }
+
+  int get remainingMessages => _maxMessagesPerSession - _sessionCount;
 }
 
 extension<T> on List<T> {

@@ -99,20 +99,19 @@ Amen.''',
     categorie: 'Classiques',
     description: '''Prière de pénitence récitée au début de la messe pour reconnaître ses fautes devant Dieu et l'assemblée.''',
     contenu: '''Je confesse à Dieu tout-puissant,
-à la bienheureuse Vierge Marie,
-à saint Michel Archange,
-à saint Jean-Baptiste,
-aux saints Apôtres Pierre et Paul,
-à tous les saints, et à vous, mes frères,
-que j'ai beaucoup péché
-en pensée, en parole, par action et par omission.
-Oui, c'est ma faute, c'est ma faute,
+et à vous, mes frères,
+que j'ai péché
+en pensée, en parole, par action et par omission ;
+oui, j'ai vraiment péché.
+C'est ma faute, c'est ma faute,
 c'est ma très grande faute.
 C'est pourquoi je supplie la bienheureuse Vierge Marie,
-saint Michel Archange, saint Jean-Baptiste,
-les saints Apôtres Pierre et Paul, tous les saints,
+tous les anges et les saints,
 et vous aussi, mes frères,
-de prier pour moi le Seigneur notre Dieu.''',
+de prier pour moi le Seigneur notre Dieu.
+
+──────────────
+Forme ordinaire du Missel Romain (messes du dimanche).''',
     longueur: 1,
   ),
 
@@ -275,7 +274,7 @@ Amen.
 Gloire au Père...
 
 ──────────────
-Prière traditionnellement récitée à 7h, 12h et 19h.''',
+Prière récitée traditionnellement à 6h, 12h et 18h.''',
     longueur: 5,
   ),
 
@@ -862,7 +861,7 @@ Amen.''',
     contenu: '''Saint Michel Archange,
 défendez-nous dans le combat ;
 soyez notre protecteur contre la malice
-et les embûches du démon.
+et les embûches du diable.
 
 Que Dieu lui commande, nous vous en supplions ;
 et vous, prince de la milice céleste,
@@ -908,9 +907,9 @@ Fête le 1er octobre.''',
 
   Prayer(
     id: 'priere-saint-francois',
-    titre: 'Prière de saint François d\'Assise',
+    titre: 'Prière pour la paix',
     categorie: 'Prières des Saints',
-    description: '''Seigneur, fais de moi un instrument de ta paix. L'une des prières les plus aimées au monde.''',
+    description: '''Seigneur, fais de moi un instrument de ta paix. L'une des prières les plus aimées dans la tradition franciscaine.''',
     contenu: '''Seigneur, fais de moi un instrument de ta paix.
 Là où est la haine, que je mette l'amour.
 Là où est l'offense, que je mette le pardon.
@@ -931,7 +930,13 @@ c'est en s'oubliant que l'on trouve,
 c'est en pardonnant que l'on est pardonné,
 c'est en mourant que l'on ressuscite à l'éternelle vie.
 
-Amen.''',
+Amen.
+
+──────────────
+Prière dans l'esprit de saint François d'Assise.
+Publiée pour la première fois en 1912 dans la revue
+« La Clochette » — sa paternité franciscaine est traditionnelle,
+non historiquement établie.''',
     longueur: 3,
   ),
 

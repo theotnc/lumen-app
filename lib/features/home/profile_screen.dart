@@ -6,17 +6,24 @@ import '../../core/services/auth_service.dart';
 import '../../core/theme.dart';
 import '../notifications/notification_settings_screen.dart';
 import 'edit_profile_screen.dart';
-import '../donations/donation_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final name = user?.displayName ?? user?.email ?? 'Utilisateur';
-    final initial = name.substring(0, 1).toUpperCase();
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.userChanges(),
+      builder: (context, snapshot) {
+        final user = snapshot.data ?? FirebaseAuth.instance.currentUser;
+        final name = user?.displayName ?? user?.email ?? 'Utilisateur';
+        final initial = name.substring(0, 1).toUpperCase();
+        return _buildScaffold(context, user, name, initial);
+      },
+    );
+  }
 
+  Widget _buildScaffold(BuildContext context, User? user, String name, String initial) {
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: Container(
@@ -168,13 +175,6 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () => Navigator.push(context,
                           MaterialPageRoute(
                               builder: (_) => const NotificationSettingsScreen())),
-                    ),
-                    _SettingsTile(
-                      icon: Icons.favorite_outline,
-                      iconColor: const Color(0xFFFF6B6B),
-                      label: 'Soutenir le projet',
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const DonationScreen())),
                     ),
                   ],
                 ),

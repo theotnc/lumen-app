@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/theme.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -60,6 +61,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() { _loadingName = true; _nameError = null; _nameSuccess = null; });
     try {
       await _user.updateDisplayName(name);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_user.uid)
+          .update({'displayName': name});
       if (mounted) setState(() { _loadingName = false; _nameSuccess = 'Pseudo mis à jour !'; });
     } on FirebaseAuthException catch (e) {
       if (mounted) setState(() { _loadingName = false; _nameError = _authMsg(e.code); });

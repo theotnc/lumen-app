@@ -96,7 +96,7 @@ class _ChurchDetailScreenState extends State<ChurchDetailScreen> {
                             TileLayer(
                               urlTemplate:
                                   'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                              userAgentPackageName: 'com.cathoapp.bible',
+                              userAgentPackageName: 'com.cathoapp.lumen',
                               retinaMode: RetinaMode.isHighDensity(context),
                             ),
                             MarkerLayer(markers: [

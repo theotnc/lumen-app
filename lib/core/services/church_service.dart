@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:math' show cos, pi;
+import 'dart:math' show cos;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show compute;
+import 'package:flutter/foundation.dart' show compute, debugPrint;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
@@ -104,7 +104,8 @@ class ChurchService {
           .toList();
       _grid.build(_bundledChurches!); // Index spatial construit une seule fois
       return _bundledChurches!;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[ChurchService] loadBundle error: $e');
       return [];
     }
   }
@@ -284,7 +285,8 @@ class ChurchService {
           .first
           .trim();
       return (LatLng(lat, lon), name);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[ChurchService] geocode error: $e');
       return null;
     }
   }
@@ -350,7 +352,8 @@ class ChurchService {
           .toList();
       _osmCache[cacheKey] = result;
       return result;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[ChurchService] OSM fetch error: $e');
       return [];
     }
   }
@@ -384,7 +387,9 @@ class ChurchService {
           .map((d) => Church.fromMap(d.id, d.data()))
           .where((c) => _distanceKm(position, c.latLng) <= radiusKm)
           .toList();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[ChurchService] Firestore fetch error: $e');
+    }
 
     // 3. OSM Overpass seulement si le bundle et Firestore n'ont rien pour cette zone
     List<Church> osm = [];
@@ -392,7 +397,9 @@ class ChurchService {
       try {
         osm = await fetchFromOSM(position, radiusKm);
         if (osm.isNotEmpty) _cacheOsmToFirestore(osm);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[ChurchService] OSM nearby error: $e');
+      }
     }
 
     // 4. Fusion : Firestore > bundle > OSM
@@ -438,7 +445,6 @@ class ChurchService {
       final snap = await _db
           .collection('horaires')
           .where('egliseId', isEqualTo: churchId)
-          .where('verifiee', isEqualTo: true)
           .get()
           .timeout(const Duration(seconds: 8));
 
@@ -455,7 +461,8 @@ class ChurchService {
       });
 
       return schedules;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[ChurchService] loadSchedules error: $e');
       return [];
     }
   }
@@ -470,7 +477,7 @@ class ChurchService {
       'type':       s.type,
       'langue':     s.langue,
       'notes':      s.notes,
-      'verifiee':   true,
+      'verifiee':   false,
       'soumis_par': uid,
       'soumis_at':  FieldValue.serverTimestamp(),
     });

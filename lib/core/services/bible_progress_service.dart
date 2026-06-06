@@ -41,6 +41,16 @@ class BibleProgressService {
     await prefs.setStringList(_keyDone, done.toList());
   }
 
+  /// Chapitres lus pour un livre donné (numéros 1-indexés).
+  Future<Set<int>> getReadChapters(String bookId) async {
+    final done = await _getDone();
+    return done
+        .where((k) => k.startsWith('$bookId/'))
+        .map((k) => int.tryParse(k.split('/')[1]) ?? 0)
+        .where((n) => n > 0)
+        .toSet();
+  }
+
   /// Nombre de chapitres lus dans un sous-ensemble de livres (AT ou NT).
   Future<int> countRead(List<String> bookIds) async {
     final done = await _getDone();

@@ -242,10 +242,11 @@ class _DonationHeader extends StatelessWidget {
               border: Border.all(
                   color: Colors.white.withValues(alpha: 0.3), width: 1.5),
             ),
-            child: ClipOval(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
               child: Image.asset(
-                'assets/app_icon.png',
-                fit: BoxFit.cover,
+                'assets/logo_transparent.png',
+                fit: BoxFit.contain,
               ),
             ),
           ),

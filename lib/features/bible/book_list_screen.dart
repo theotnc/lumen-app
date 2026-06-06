@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/models/bible_models.dart';
 import '../../core/models/bible_book_meta.dart';
 import '../../core/theme.dart';
-import 'chapter_screen.dart';
+import 'reading_screen.dart';
 
 class BookListScreen extends StatelessWidget {
   final List<BibleBook> books;
@@ -68,7 +68,7 @@ class BookListScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       _BookGroup(books: groupBooks, onTap: (book) {
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (_) => ChapterScreen(book: book),
+                          builder: (_) => ReadingScreen(book: book),
                         ));
                       }),
                       const SizedBox(height: 24),
