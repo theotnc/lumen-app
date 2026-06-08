@@ -60,15 +60,15 @@ class BibleProgressService {
   /// Nombre total de chapitres lus (tous testaments).
   Future<int> totalRead() async => (await _getDone()).length;
 
-  // ── Position de scroll ─────────────────────────────────────
+  // ── Dernier chapitre par livre (persistant) ────────────────
 
-  Future<void> saveScrollOffset(String bookId, double offset) async {
+  Future<void> saveBookChapter(String bookId, int chapter) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble('bible_scroll_$bookId', offset);
+    await prefs.setInt('bible_ch_$bookId', chapter);
   }
 
-  Future<double> getScrollOffset(String bookId) async {
+  Future<int> getBookChapter(String bookId) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble('bible_scroll_$bookId') ?? 0.0;
+    return prefs.getInt('bible_ch_$bookId') ?? 1;
   }
 }

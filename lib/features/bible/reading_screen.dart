@@ -39,13 +39,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   @override
   void dispose() {
-    // Sauvegarde la position exacte avant de quitter
-    if (_scrollController.hasClients) {
-      BibleProgressService().saveScrollOffset(
-        widget.book.id,
-        _scrollController.offset,
-      );
-    }
     _scrollController.dispose();
     super.dispose();
   }
@@ -54,7 +47,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
     final chapters = await LocalBibleService().getChapters(widget.book.id);
     final passages = await LocalBibleService().getAllChapters(widget.book.id);
     final readChapters = await BibleProgressService().getReadChapters(widget.book.id);
-    final savedOffset = await BibleProgressService().getScrollOffset(widget.book.id);
+    final savedChapter = await BibleProgressService().getBookChapter(widget.book.id);
     if (!mounted) return;
 
     _chapterKeys
@@ -68,16 +61,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
       _loading = false;
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (savedOffset > 0) {
-        // Restaure la position exacte (sauvegardée à la fermeture)
-        _scrollController.jumpTo(
-          savedOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
-        );
-      } else if (widget.initialChapter > 1) {
-        _scrollToChapter(widget.initialChapter, animate: false);
-      }
-    });
+    // Restaure le chapitre sauvegardé (avec retry si le layout n'est pas prêt)
+    final targetChapter = savedChapter > 1 ? savedChapter : widget.initialChapter;
+    if (targetChapter > 1) {
+      _scrollToChapter(targetChapter, animate: false);
+    }
   }
 
   void _onScroll() {
@@ -98,6 +86,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
           });
           final svc = BibleProgressService();
           svc.saveLastRead(widget.book.id, widget.book.name, newCh);
+          svc.saveBookChapter(widget.book.id, newCh);
           svc.markChapterRead(widget.book.id, newCh);
         }
         break;
@@ -105,10 +94,18 @@ class _ReadingScreenState extends State<ReadingScreen> {
     }
   }
 
-  void _scrollToChapter(int chNum, {bool animate = true}) {
+  void _scrollToChapter(int chNum, {bool animate = true, int _retries = 8}) {
     if (chNum < 1 || chNum > _chapterKeys.length) return;
     final ctx = _chapterKeys[chNum - 1].currentContext;
-    if (ctx == null) return;
+    if (ctx == null) {
+      // Layout pas encore prêt — réessaie après le prochain frame
+      if (_retries > 0) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _scrollToChapter(chNum, animate: animate, _retries: _retries - 1);
+        });
+      }
+      return;
+    }
     Scrollable.ensureVisible(
       ctx,
       duration: animate ? const Duration(milliseconds: 350) : Duration.zero,
