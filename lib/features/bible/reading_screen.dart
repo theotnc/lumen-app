@@ -94,14 +94,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
     }
   }
 
-  void _scrollToChapter(int chNum, {bool animate = true, int _retries = 8}) {
+  void _scrollToChapter(int chNum, {bool animate = true, int retries = 8}) {
     if (chNum < 1 || chNum > _chapterKeys.length) return;
     final ctx = _chapterKeys[chNum - 1].currentContext;
     if (ctx == null) {
       // Layout pas encore prêt — réessaie après le prochain frame
-      if (_retries > 0) {
+      if (retries > 0) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _scrollToChapter(chNum, animate: animate, _retries: _retries - 1);
+          if (mounted) _scrollToChapter(chNum, animate: animate, retries: retries - 1);
         });
       }
       return;
