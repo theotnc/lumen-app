@@ -72,8 +72,11 @@ class _BibleScreenState extends State<BibleScreen> {
 
   void _openBook(String abbrev) {
     final book = _books.firstWhere((b) => b.id == abbrev, orElse: () => _books.first);
+    final lastChapter = (_lastRead != null && _lastRead!['bookId'] == abbrev)
+        ? (_lastRead!['chapter'] as int? ?? 1)
+        : 1;
     Navigator.push(context, MaterialPageRoute(
-      builder: (_) => ReadingScreen(book: book),
+      builder: (_) => ReadingScreen(book: book, initialChapter: lastChapter),
     )).then((_) => _loadProgress());
   }
 
@@ -225,7 +228,7 @@ class _BibleScreenState extends State<BibleScreen> {
           orElse: () => _books.first,
         );
         Navigator.push(context, MaterialPageRoute(
-          builder: (_) => ReadingScreen(book: book),
+          builder: (_) => ReadingScreen(book: book, initialChapter: chapter),
         )).then((_) => _loadProgress());
       },
       child: Container(

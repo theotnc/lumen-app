@@ -39,6 +39,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   @override
   void dispose() {
+    // Sauvegarde la position exacte avant de quitter
+    if (_scrollController.hasClients) {
+      BibleProgressService().saveScrollOffset(
+        widget.book.id,
+        _scrollController.offset,
+      );
+    }
     _scrollController.dispose();
     super.dispose();
   }
@@ -47,6 +54,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
     final chapters = await LocalBibleService().getChapters(widget.book.id);
     final passages = await LocalBibleService().getAllChapters(widget.book.id);
     final readChapters = await BibleProgressService().getReadChapters(widget.book.id);
+    final savedOffset = await BibleProgressService().getScrollOffset(widget.book.id);
     if (!mounted) return;
 
     _chapterKeys
@@ -60,11 +68,16 @@ class _ReadingScreenState extends State<ReadingScreen> {
       _loading = false;
     });
 
-    if (widget.initialChapter > 1) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (savedOffset > 0) {
+        // Restaure la position exacte (sauvegardée à la fermeture)
+        _scrollController.jumpTo(
+          savedOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
+        );
+      } else if (widget.initialChapter > 1) {
         _scrollToChapter(widget.initialChapter, animate: false);
-      });
-    }
+      }
+    });
   }
 
   void _onScroll() {
