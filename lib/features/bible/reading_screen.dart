@@ -47,7 +47,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
     final chapters = await LocalBibleService().getChapters(widget.book.id);
     final passages = await LocalBibleService().getAllChapters(widget.book.id);
     final readChapters = await BibleProgressService().getReadChapters(widget.book.id);
-    final savedChapter = await BibleProgressService().getBookChapter(widget.book.id);
     if (!mounted) return;
 
     _chapterKeys
@@ -61,10 +60,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
       _loading = false;
     });
 
-    // Restaure le chapitre sauvegardé (avec retry si le layout n'est pas prêt)
-    final targetChapter = savedChapter > 1 ? savedChapter : widget.initialChapter;
-    if (targetChapter > 1) {
-      _scrollToChapter(targetChapter, animate: false);
+    if (widget.initialChapter > 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToChapter(widget.initialChapter, animate: false);
+      });
     }
   }
 
@@ -86,7 +85,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
           });
           final svc = BibleProgressService();
           svc.saveLastRead(widget.book.id, widget.book.name, newCh);
-          svc.saveBookChapter(widget.book.id, newCh);
           svc.markChapterRead(widget.book.id, newCh);
         }
         break;
@@ -94,24 +92,37 @@ class _ReadingScreenState extends State<ReadingScreen> {
     }
   }
 
-  void _scrollToChapter(int chNum, {bool animate = true, int retries = 8}) {
+  void _scrollToChapter(int chNum, {bool animate = true}) {
     if (chNum < 1 || chNum > _chapterKeys.length) return;
+
+    // Si le chapitre est déjà dans le viewport, on l'utilise directement
     final ctx = _chapterKeys[chNum - 1].currentContext;
-    if (ctx == null) {
-      // Layout pas encore prêt — réessaie après le prochain frame
-      if (retries > 0) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _scrollToChapter(chNum, animate: animate, retries: retries - 1);
-        });
-      }
+    if (ctx != null) {
+      Scrollable.ensureVisible(ctx,
+        duration: animate ? const Duration(milliseconds: 350) : Duration.zero,
+        curve: Curves.easeInOut,
+        alignment: 0.0,
+      );
       return;
     }
-    Scrollable.ensureVisible(
-      ctx,
-      duration: animate ? const Duration(milliseconds: 350) : Duration.zero,
-      curve: Curves.easeInOut,
-      alignment: 0.0,
-    );
+
+    // Chapitre hors-écran : saut estimé basé sur le nombre de versets
+    if (!_scrollController.hasClients || _passages.isEmpty) return;
+    double estimatedOffset = 0;
+    for (int i = 0; i < chNum - 1 && i < _passages.length; i++) {
+      final verseCount = '\n\n'.allMatches(_passages[i].content).length + 1;
+      estimatedOffset += 88 + verseCount * _fontSize * 1.9 * 2.2;
+    }
+    _scrollController.jumpTo(estimatedOffset);
+
+    // Affinage après le prochain frame (le chapitre est maintenant proche)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final ctx2 = _chapterKeys[chNum - 1].currentContext;
+      if (ctx2 != null) {
+        Scrollable.ensureVisible(ctx2, duration: Duration.zero, alignment: 0.0);
+      }
+    });
   }
 
   void _openChapterSheet() {

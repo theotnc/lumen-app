@@ -60,15 +60,4 @@ class BibleProgressService {
   /// Nombre total de chapitres lus (tous testaments).
   Future<int> totalRead() async => (await _getDone()).length;
 
-  // ── Dernier chapitre par livre (persistant) ────────────────
-
-  Future<void> saveBookChapter(String bookId, int chapter) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('bible_ch_$bookId', chapter);
-  }
-
-  Future<int> getBookChapter(String bookId) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('bible_ch_$bookId') ?? 1;
-  }
 }
