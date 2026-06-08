@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../core/models/bible_models.dart';
 import '../../core/services/local_bible_service.dart';
@@ -33,7 +34,7 @@ class _ChapterScreenState extends State<ChapterScreen> {
     final svc = BibleProgressService();
     svc.saveLastRead(widget.book.id, widget.book.name, chNum);
     svc.markChapterRead(widget.book.id, chNum);
-    Navigator.push(context, MaterialPageRoute(
+    Navigator.push(context, CupertinoPageRoute(
       builder: (_) => VerseScreen(chapters: _chapters, initialIndex: index),
     ));
   }

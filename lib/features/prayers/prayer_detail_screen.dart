@@ -132,11 +132,10 @@ class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
                             ),
                             child: Text(
                               p.contenu,
-                              style: TextStyle(
+                              style: AppTheme.serif(
                                 fontSize: _fontSize,
                                 height: 1.9,
                                 color: Colors.white.withValues(alpha: 0.88),
-                                letterSpacing: -0.1,
                               ),
                             ),
                           ),

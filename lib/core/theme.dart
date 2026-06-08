@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // ── Palette ──────────────────────────────────────────────
@@ -43,6 +44,35 @@ class AppTheme {
   static List<BoxShadow> get navShadow => const [
     BoxShadow(color: Color(0x60000000), blurRadius: 40, offset: Offset(0, -4)),
   ];
+
+  // ── Typographie sacrée (serif) ───────────────────────────
+  static TextStyle serif({
+    double fontSize = 17,
+    double height = 1.9,
+    Color color = label,
+    FontWeight weight = FontWeight.w400,
+    FontStyle style = FontStyle.normal,
+    double letterSpacing = 0.0,
+  }) =>
+      GoogleFonts.lora(
+        fontSize: fontSize,
+        height: height,
+        color: color,
+        fontWeight: weight,
+        fontStyle: style,
+        letterSpacing: letterSpacing,
+      );
+
+  // ── Gold gradient text ───────────────────────────────────
+  static Widget goldText(String text, {TextStyle? style}) {
+    return ShaderMask(
+      shaderCallback: (bounds) => const LinearGradient(
+        colors: [Color(0xFFC9A844), Color(0xFFF0D880), Color(0xFFC9A844)],
+        stops: [0.0, 0.50, 1.0],
+      ).createShader(bounds),
+      child: Text(text, style: (style ?? const TextStyle()).copyWith(color: Colors.white)),
+    );
+  }
 
   // ── Thème ────────────────────────────────────────────────
   static ThemeData get light {

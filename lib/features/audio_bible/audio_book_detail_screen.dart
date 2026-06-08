@@ -123,7 +123,7 @@ class _AudioBookDetailScreenState extends State<AudioBookDetailScreen> {
                         ),
                       ),
                       child: const Text(
-                        'Louis Segond',
+                        'Crampon 1923',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -431,7 +431,7 @@ class _BottomPlayer extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Louis Segond',
+                              'Crampon 1923 · Livre entier',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: AppTheme.primary

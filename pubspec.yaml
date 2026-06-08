@@ -55,6 +55,9 @@ dependencies:
   # Cache SQLite (tracés pèlerinage)
   sqflite: ^2.3.0
 
+  # Typographie
+  google_fonts: ^6.2.1
+
   # Connexion sociale
   google_sign_in: ^6.2.0
   sign_in_with_apple: ^6.1.0

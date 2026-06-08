@@ -13,20 +13,24 @@ class LocalBibleService {
   Future<void> _ensureLoaded() async {
     if (_raw != null) return;
     final str = await rootBundle.loadString(
-      'assets/bible-master/json/fr_apee.json',
+      'assets/bible-master/json/fr_crampon.json',
     );
-    final list = jsonDecode(str) as List;
-    _raw = list.map((e) => _RawBook.fromJson(e as Map<String, dynamic>)).toList();
+    final data = jsonDecode(str) as Map<String, dynamic>;
+    final books = data['books'] as List;
+    _raw = books
+        .map((e) => _RawBook.fromCrampon(e as Map<String, dynamic>))
+        .where((b) => b.abbrev.isNotEmpty)
+        .toList();
   }
 
   // MARK: - Livres
 
   Future<List<BibleBook>> getBooks() async {
     await _ensureLoaded();
-    return _raw!.asMap().entries.map((e) {
-      final info = _bookInfo(e.value.abbrev);
+    return _raw!.map((b) {
+      final info = _bookInfo(b.abbrev);
       return BibleBook(
-        id: e.value.abbrev,
+        id: b.abbrev,
         name: info.name,
         testament: info.testament,
       );
@@ -54,7 +58,6 @@ class LocalBibleService {
 
   Future<BiblePassage> getChapter(String chapterId) async {
     await _ensureLoaded();
-    // chapterId = "gn.1"
     final parts = chapterId.split('.');
     final bookId = parts[0];
     final chapterNum = int.parse(parts[1]);
@@ -74,7 +77,7 @@ class LocalBibleService {
       id: chapterId,
       reference: reference,
       content: content,
-      copyright: 'Traduction APEE — Domaine public',
+      copyright: 'Crampon 1923 — Domaine public',
     );
   }
 
@@ -123,80 +126,169 @@ class LocalBibleService {
     return results;
   }
 
-  // MARK: - Mapping abbrev → nom français + testament
+  // MARK: - Mapping nom anglais FreCrampon → abréviation interne
+
+  static const _cramponToAbbrev = <String, String>{
+    'Genesis':          'gn',
+    'Exodus':           'ex',
+    'Leviticus':        'lv',
+    'Numbers':          'nm',
+    'Deuteronomy':      'dt',
+    'Joshua':           'js',
+    'Judges':           'jg',
+    'Ruth':             'rt',
+    'I Samuel':         '1sm',
+    'II Samuel':        '2sm',
+    'I Kings':          '1kgs',
+    'II Kings':         '2kgs',
+    'I Chronicles':     '1ch',
+    'II Chronicles':    '2ch',
+    'Ezra':             'ezr',
+    'Nehemiah':         'ne',
+    'Tobit':            'tb',
+    'Judith':           'jdt',
+    'Esther':           'et',
+    'I Maccabees':      '1mac',
+    'II Maccabees':     '2mac',
+    'Job':              'jb',
+    'Psalms':           'ps',
+    'Proverbs':         'prv',
+    'Ecclesiastes':     'ec',
+    'Song of Solomon':  'sg',
+    'Wisdom':           'wis',
+    'Sirach':           'sir',
+    'Isaiah':           'is',
+    'Jeremiah':         'jr',
+    'Lamentations':     'lm',
+    'Baruch':           'bar',
+    'Ezekiel':          'ez',
+    'Daniel':           'dn',
+    'Hosea':            'os',
+    'Joel':             'jl',
+    'Amos':             'am',
+    'Obadiah':          'ob',
+    'Jonah':            'jn',
+    'Micah':            'mi',
+    'Nahum':            'na',
+    'Habakkuk':         'hb',
+    'Zephaniah':        'zp',
+    'Haggai':           'ag',
+    'Zechariah':        'zc',
+    'Malachi':          'ml',
+    'Matthew':          'mt',
+    'Mark':             'mk',
+    'Luke':             'lk',
+    'John':             'jo',
+    'Acts':             'act',
+    'Romans':           'rm',
+    'I Corinthians':    '1co',
+    'II Corinthians':   '2co',
+    'Galatians':        'gl',
+    'Ephesians':        'ep',
+    'Philippians':      'ph',
+    'Colossians':       'cl',
+    'I Thessalonians':  '1ts',
+    'II Thessalonians': '2ts',
+    'I Timothy':        '1tm',
+    'II Timothy':       '2tm',
+    'Titus':            'tt',
+    'Philemon':         'phm',
+    'Hebrews':          'heb',
+    'James':            'jm',
+    'I Peter':          '1pe',
+    'II Peter':         '2pe',
+    'I John':           '1jo',
+    'II John':          '2jo',
+    'III John':         '3jo',
+    'Jude':             'jd',
+    'Revelation of John': 'rv',
+  };
+
+  // MARK: - Mapping abréviation → nom français + testament
 
   _BookInfo _bookInfo(String abbrev) =>
       _bookMap[abbrev] ?? _BookInfo(abbrev, 'OT');
 
   static const _bookMap = <String, _BookInfo>{
-    // Ancien Testament
-    'gn':  _BookInfo('Genèse', 'OT'),
-    'ex':  _BookInfo('Exode', 'OT'),
-    'lv':  _BookInfo('Lévitique', 'OT'),
-    'nm':  _BookInfo('Nombres', 'OT'),
-    'dt':  _BookInfo('Deutéronome', 'OT'),
-    'js':  _BookInfo('Josué', 'OT'),
-    'jg':  _BookInfo('Juges', 'OT'),
-    'rt':  _BookInfo('Ruth', 'OT'),
-    '1sm': _BookInfo('1 Samuel', 'OT'),
-    '2sm': _BookInfo('2 Samuel', 'OT'),
-    '1kgs':_BookInfo('1 Rois', 'OT'),
-    '2kgs':_BookInfo('2 Rois', 'OT'),
-    '1ch': _BookInfo('1 Chroniques', 'OT'),
-    '2ch': _BookInfo('2 Chroniques', 'OT'),
-    'ezr': _BookInfo('Esdras', 'OT'),
-    'ne':  _BookInfo('Néhémie', 'OT'),
-    'et':  _BookInfo('Esther', 'OT'),
-    'jb':  _BookInfo('Job', 'OT'),
-    'ps':  _BookInfo('Psaumes', 'OT'),
-    'prv': _BookInfo('Proverbes', 'OT'),
-    'ec':  _BookInfo('Ecclésiaste', 'OT'),
-    'sg':  _BookInfo('Cantique des Cantiques', 'OT'),
-    'is':  _BookInfo('Ésaïe', 'OT'),
-    'jr':  _BookInfo('Jérémie', 'OT'),
-    'lm':  _BookInfo('Lamentations', 'OT'),
-    'ez':  _BookInfo('Ézéchiel', 'OT'),
-    'dn':  _BookInfo('Daniel', 'OT'),
-    'os':  _BookInfo('Osée', 'OT'),
-    'jl':  _BookInfo('Joël', 'OT'),
-    'am':  _BookInfo('Amos', 'OT'),
-    'ob':  _BookInfo('Abdias', 'OT'),
-    'jn':  _BookInfo('Jonas', 'OT'),
-    'mi':  _BookInfo('Michée', 'OT'),
-    'na':  _BookInfo('Nahoum', 'OT'),
-    'hb':  _BookInfo('Habacuc', 'OT'),
-    'zp':  _BookInfo('Sophonie', 'OT'),
-    'ag':  _BookInfo('Aggée', 'OT'),
-    'zc':  _BookInfo('Zacharie', 'OT'),
-    'ml':  _BookInfo('Malachie', 'OT'),
+    // Pentateuque
+    'gn':   _BookInfo('Genèse', 'OT'),
+    'ex':   _BookInfo('Exode', 'OT'),
+    'lv':   _BookInfo('Lévitique', 'OT'),
+    'nm':   _BookInfo('Nombres', 'OT'),
+    'dt':   _BookInfo('Deutéronome', 'OT'),
+    // Livres historiques
+    'js':   _BookInfo('Josué', 'OT'),
+    'jg':   _BookInfo('Juges', 'OT'),
+    'rt':   _BookInfo('Ruth', 'OT'),
+    '1sm':  _BookInfo('1 Samuel', 'OT'),
+    '2sm':  _BookInfo('2 Samuel', 'OT'),
+    '1kgs': _BookInfo('1 Rois', 'OT'),
+    '2kgs': _BookInfo('2 Rois', 'OT'),
+    '1ch':  _BookInfo('1 Chroniques', 'OT'),
+    '2ch':  _BookInfo('2 Chroniques', 'OT'),
+    'ezr':  _BookInfo('Esdras', 'OT'),
+    'ne':   _BookInfo('Néhémie', 'OT'),
+    'tb':   _BookInfo('Tobie', 'OT'),       // deutérocanonique
+    'jdt':  _BookInfo('Judith', 'OT'),      // deutérocanonique
+    'et':   _BookInfo('Esther', 'OT'),      // après Judith dans le canon catholique
+    '1mac': _BookInfo('1 Maccabées', 'OT'), // deutérocanonique
+    '2mac': _BookInfo('2 Maccabées', 'OT'), // deutérocanonique
+    // Poésie et sagesse
+    'jb':   _BookInfo('Job', 'OT'),
+    'ps':   _BookInfo('Psaumes', 'OT'),
+    'prv':  _BookInfo('Proverbes', 'OT'),
+    'ec':   _BookInfo('Qohéleth', 'OT'),
+    'sg':   _BookInfo('Cantique des Cantiques', 'OT'),
+    'wis':  _BookInfo('Sagesse', 'OT'),     // deutérocanonique
+    'sir':  _BookInfo('Siracide', 'OT'),    // deutérocanonique
+    // Grands Prophètes
+    'is':   _BookInfo('Isaïe', 'OT'),
+    'jr':   _BookInfo('Jérémie', 'OT'),
+    'lm':   _BookInfo('Lamentations', 'OT'),
+    'bar':  _BookInfo('Baruch', 'OT'),      // deutérocanonique
+    'ez':   _BookInfo('Ézéchiel', 'OT'),
+    'dn':   _BookInfo('Daniel', 'OT'),
+    // Petits Prophètes
+    'os':   _BookInfo('Osée', 'OT'),
+    'jl':   _BookInfo('Joël', 'OT'),
+    'am':   _BookInfo('Amos', 'OT'),
+    'ob':   _BookInfo('Abdias', 'OT'),
+    'jn':   _BookInfo('Jonas', 'OT'),
+    'mi':   _BookInfo('Michée', 'OT'),
+    'na':   _BookInfo('Nahoum', 'OT'),
+    'hb':   _BookInfo('Habacuc', 'OT'),
+    'zp':   _BookInfo('Sophonie', 'OT'),
+    'ag':   _BookInfo('Aggée', 'OT'),
+    'zc':   _BookInfo('Zacharie', 'OT'),
+    'ml':   _BookInfo('Malachie', 'OT'),
     // Nouveau Testament
-    'mt':  _BookInfo('Matthieu', 'NT'),
-    'mk':  _BookInfo('Marc', 'NT'),
-    'lk':  _BookInfo('Luc', 'NT'),
-    'jo':  _BookInfo('Jean', 'NT'),
-    'act': _BookInfo('Actes', 'NT'),
-    'rm':  _BookInfo('Romains', 'NT'),
-    '1co': _BookInfo('1 Corinthiens', 'NT'),
-    '2co': _BookInfo('2 Corinthiens', 'NT'),
-    'gl':  _BookInfo('Galates', 'NT'),
-    'ep':  _BookInfo('Éphésiens', 'NT'),
-    'ph':  _BookInfo('Philippiens', 'NT'),
-    'cl':  _BookInfo('Colossiens', 'NT'),
-    '1ts': _BookInfo('1 Thessaloniciens', 'NT'),
-    '2ts': _BookInfo('2 Thessaloniciens', 'NT'),
-    '1tm': _BookInfo('1 Timothée', 'NT'),
-    '2tm': _BookInfo('2 Timothée', 'NT'),
-    'tt':  _BookInfo('Tite', 'NT'),
-    'phm': _BookInfo('Philémon', 'NT'),
-    'heb': _BookInfo('Hébreux', 'NT'),
-    'jm':  _BookInfo('Jacques', 'NT'),
-    '1pe': _BookInfo('1 Pierre', 'NT'),
-    '2pe': _BookInfo('2 Pierre', 'NT'),
-    '1jo': _BookInfo('1 Jean', 'NT'),
-    '2jo': _BookInfo('2 Jean', 'NT'),
-    '3jo': _BookInfo('3 Jean', 'NT'),
-    'jd':  _BookInfo('Jude', 'NT'),
-    'rv':  _BookInfo('Apocalypse', 'NT'),
+    'mt':   _BookInfo('Matthieu', 'NT'),
+    'mk':   _BookInfo('Marc', 'NT'),
+    'lk':   _BookInfo('Luc', 'NT'),
+    'jo':   _BookInfo('Jean', 'NT'),
+    'act':  _BookInfo('Actes', 'NT'),
+    'rm':   _BookInfo('Romains', 'NT'),
+    '1co':  _BookInfo('1 Corinthiens', 'NT'),
+    '2co':  _BookInfo('2 Corinthiens', 'NT'),
+    'gl':   _BookInfo('Galates', 'NT'),
+    'ep':   _BookInfo('Éphésiens', 'NT'),
+    'ph':   _BookInfo('Philippiens', 'NT'),
+    'cl':   _BookInfo('Colossiens', 'NT'),
+    '1ts':  _BookInfo('1 Thessaloniciens', 'NT'),
+    '2ts':  _BookInfo('2 Thessaloniciens', 'NT'),
+    '1tm':  _BookInfo('1 Timothée', 'NT'),
+    '2tm':  _BookInfo('2 Timothée', 'NT'),
+    'tt':   _BookInfo('Tite', 'NT'),
+    'phm':  _BookInfo('Philémon', 'NT'),
+    'heb':  _BookInfo('Hébreux', 'NT'),
+    'jm':   _BookInfo('Jacques', 'NT'),
+    '1pe':  _BookInfo('1 Pierre', 'NT'),
+    '2pe':  _BookInfo('2 Pierre', 'NT'),
+    '1jo':  _BookInfo('1 Jean', 'NT'),
+    '2jo':  _BookInfo('2 Jean', 'NT'),
+    '3jo':  _BookInfo('3 Jean', 'NT'),
+    'jd':   _BookInfo('Jude', 'NT'),
+    'rv':   _BookInfo('Apocalypse', 'NT'),
   };
 }
 
@@ -212,13 +304,18 @@ class _RawBook {
 
   _RawBook({required this.abbrev, required this.chapters});
 
-  factory _RawBook.fromJson(Map<String, dynamic> json) {
+  factory _RawBook.fromCrampon(Map<String, dynamic> json) {
+    final englishName = json['name'] as String;
+    final abbrev = LocalBibleService._cramponToAbbrev[englishName] ?? '';
+
     final rawChapters = json['chapters'] as List;
-    return _RawBook(
-      abbrev: json['abbrev'] as String,
-      chapters: rawChapters
-          .map((c) => (c as List).map((v) => v.toString()).toList())
-          .toList(),
-    );
+    final chapters = rawChapters.map((c) {
+      final verses = (c as Map<String, dynamic>)['verses'] as List;
+      return verses
+          .map((v) => ((v as Map<String, dynamic>)['text'] as String).trim())
+          .toList();
+    }).toList();
+
+    return _RawBook(abbrev: abbrev, chapters: chapters);
   }
 }

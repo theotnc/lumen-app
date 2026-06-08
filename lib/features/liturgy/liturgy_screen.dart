@@ -42,7 +42,7 @@ class _LiturgyScreenState extends State<LiturgyScreen> {
       case 'noel':
         return 'Le temps de Noël va du 25 décembre jusqu\'au Baptême du Seigneur (début janvier). On célèbre la naissance de Jésus et les mystères de son enfance.';
       case 'careme':
-        return 'Le Carême dure 40 jours avant Pâques, comme les 40 jours de Jésus au désert. C\'est un temps de prière, de jeûne et de partage pour se préparer à la résurrection.';
+        return 'Le Carême dure 40 jours de pénitence (hors dimanches) à partir du Mercredi des Cendres, comme les 40 jours de Jésus au désert. C\'est un temps de prière, de jeûne et de partage pour se préparer à la résurrection.';
       case 'paques':
         return 'Le temps de Pâques dure 50 jours, de la résurrection du Christ jusqu\'à la Pentecôte. C\'est le cœur de toute l\'année chrétienne.';
       default: // temps_ordinaire
@@ -975,7 +975,7 @@ class _ColorsGuideState extends State<_ColorsGuide> {
     (Color(0xFF9B59B6), 'Violet', 'Avent et Carême — attente, pénitence, préparation'),
     (Color(0xFFC9A844), 'Blanc',  'Noël, Pâques, solennités — joie et lumière'),
     (Color(0xFFE74C3C), 'Rouge',  'Pentecôte et fêtes des martyrs — feu de l\'Esprit'),
-    (Color(0xFFE91E8C), 'Rose',   '3e dim. Avent (Gaudete) · 4e dim. Carême (Laetare) — joie au cœur de l\'attente'),
+    (Color(0xFFB565A7), 'Rose',   '3e dim. Avent (Gaudete) · 4e dim. Carême (Laetare) — joie au cœur de l\'attente'),
   ];
 
   @override

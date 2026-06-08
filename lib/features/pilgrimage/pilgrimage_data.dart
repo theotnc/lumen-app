@@ -570,10 +570,10 @@ const List<PilgrimRoute> kPilgrimRoutes = [
   PilgrimRoute(
     id: 'tro-breizh',
     name: 'Tro Breizh',
-    latinName: 'Iter Septum Sanctorum',
+    latinName: 'Iter Septem Sanctorum',
     origin: 'Saint-Brieuc',
     end: 'Circuit (7 saints)',
-    description: 'Le grand pèlerinage breton en circuit autour des 7 saints fondateurs de Bretagne. Une tradition millénaire qui se perpétue.',
+    description: 'Le grand pèlerinage breton en circuit autour des 7 saints fondateurs de Bretagne. Un grand pèlerinage transmis depuis le Moyen Âge qui se perpétue.',
     distanceKm: 600,
     stages: 28,
     icon: Icons.loop_rounded,
@@ -584,7 +584,7 @@ const List<PilgrimRoute> kPilgrimRoutes = [
       PilgrimStage('Quimper', detail: 'Cathédrale Saint-Corentin · Cœur de la Cornouaille', isSanctuary: true),
       PilgrimStage('Vannes', detail: 'Cathédrale Saint-Pierre · Tombeau de saint Vincent Ferrier', isSanctuary: true),
       PilgrimStage('Dol-de-Bretagne', detail: 'Cathédrale Saint-Samson · Plus ancienne cathédrale bretonne', isSanctuary: true),
-      PilgrimStage('Saint-Malo', detail: 'Cathédrale Saint-Vincent · Saint Aaron et saint Brendan', isSanctuary: true),
+      PilgrimStage('Saint-Malo', detail: 'Cathédrale Saint-Vincent · Saint Malo (Maclovius)', isSanctuary: true),
     ],
   ),
 
@@ -697,7 +697,7 @@ const List<PilgrimRoute> kPilgrimRoutes = [
       PilgrimStage('Santiago de Compostela', detail: 'Point de départ · Dernier regard sur la cathédrale', isSanctuary: true),
       PilgrimStage('Negreira', detail: 'Palais de l\'archevêque · Entrée dans la campagne galicienne'),
       PilgrimStage('Olveiroa', detail: 'Village médiéval · Chapelle São Estevo'),
-      PilgrimStage('Cap Finisterre', detail: '0,00 km · Bout du monde · Brûler ses chaussures, tradition millénaire', isSanctuary: true),
+      PilgrimStage('Cap Finisterre', detail: '0,00 km · Bout du monde · Lieu de méditation au bord de l\'Atlantique', isSanctuary: true),
     ],
   ),
 
@@ -755,7 +755,7 @@ const List<PilgrimRoute> kPilgrimRoutes = [
     stages: 22,
     icon: Icons.spa_rounded,
     keyStages: [
-      PilgrimStage('Florence', detail: 'Basilique Santa Croce · Lieu de sépulture de Dante et Galilée'),
+      PilgrimStage('Florence', detail: 'Basilique Santa Croce · Cénotaphe de Dante · Tombeau de Galilée'),
       PilgrimStage('La Verna', detail: 'Sanctuaire des Stigmates de saint François', isSanctuary: true),
       PilgrimStage('Gubbio', detail: 'Cité médiévale · François et le loup'),
       PilgrimStage('Assise', detail: 'Basilique San Francesco · Tombeau du Poverello · UNESCO', isSanctuary: true),

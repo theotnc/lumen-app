@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../core/models/bible_models.dart';
 import '../../core/services/local_bible_service.dart';
@@ -140,11 +141,10 @@ class _VerseScreenState extends State<VerseScreen> {
                                     const SizedBox(height: 20),
                                     Text(
                                       _passage!.content,
-                                      style: TextStyle(
+                                      style: AppTheme.serif(
                                         fontSize: _fontSize,
                                         height: 1.9,
                                         color: Colors.white.withValues(alpha: 0.88),
-                                        letterSpacing: -0.1,
                                       ),
                                     ),
                                     if (_passage!.copyright != null) ...[

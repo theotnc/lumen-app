@@ -392,7 +392,7 @@ class _AudioBibleCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    'Louis Segond · 66 livres',
+                    'Crampon 1923 · Traduction catholique',
                     style: TextStyle(
                       fontSize: 13,
                       color: AppTheme.primary.withValues(alpha: 0.70),

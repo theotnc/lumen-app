@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // ── Salutation ────────────────────────────────────────────
   String get _greeting {
     final h = DateTime.now().hour;
-    if (h < 12) return 'Bon matin';
+    if (h < 12) return 'Bonjour';
     if (h < 18) return 'Bon après-midi';
     if (h < 22) return 'Bonne soirée';
     return 'Bonne nuit';
@@ -73,34 +74,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ── Verset du jour ────────────────────────────────────────
   static const _versets = [
-    ('Jean 3:16',
-        'Car Dieu a tant aimé le monde qu\'il a donné son Fils unique, afin que quiconque croit en lui ne périsse pas mais ait la vie éternelle.'),
-    ('Psaume 23:1',
-        'L\'Éternel est mon berger, je ne manquerai de rien. Il me fait reposer dans de verts pâturages.'),
-    ('Matthieu 11:28',
-        'Venez à moi, vous tous qui êtes fatigués et chargés, et je vous donnerai le repos.'),
-    ('Philippiens 4:13',
-        'Je puis tout par celui qui me fortifie.'),
-    ('Romains 8:28',
-        'Toutes choses concourent au bien de ceux qui aiment Dieu, de ceux qui sont appelés selon son dessein.'),
-    ('Luc 1:37',
+    ('Jn 3, 16',
+        'Car Dieu a tant aimé le monde qu\'il a donné son Fils unique, afin que tout homme qui croit en lui ne périsse pas mais ait la vie éternelle.'),
+    ('Ps 22, 1-2',
+        'Le Seigneur est mon berger, je ne manque de rien. Sur des prés d\'herbe fraîche, il me fait reposer.'),
+    ('Mt 11, 28',
+        'Venez à moi, vous tous qui peinez sous le poids du fardeau, et moi, je vous procurerai le repos.'),
+    ('Ph 4, 13',
+        'Je me sens capable de tout en celui qui me rend fort.'),
+    ('Rm 8, 28',
+        'Nous le savons, pour ceux qui aiment Dieu, tout concourt à leur bien, puisqu\'ils ont été appelés selon son dessein.'),
+    ('Lc 1, 37',
         'Rien n\'est impossible à Dieu.'),
-    ('Jean 14:6',
-        'Je suis le chemin, la vérité et la vie. Nul ne vient au Père que par moi.'),
-    ('1 Jean 4:8',
-        'Celui qui n\'aime pas n\'a pas connu Dieu, car Dieu est amour.'),
-    ('Psaume 46:2',
-        'Dieu est pour nous un refuge et un appui, un secours dans la détresse, toujours présent.'),
-    ('Jérémie 29:11',
-        'Je connais les projets que j\'ai formés sur vous, des projets de bonheur et non de malheur, afin de vous donner un avenir et de l\'espérance.'),
-    ('Galates 5:22',
-        'Le fruit de l\'Esprit est amour, joie, paix, patience, bonté, bienveillance, fidélité, douceur, maîtrise de soi.'),
+    ('Jn 14, 6',
+        'Je suis le chemin, la vérité et la vie. Nul ne vient au Père sans passer par moi.'),
+    ('1 Jn 4, 8',
+        'Celui qui n\'aime pas ne connaît pas Dieu, car Dieu est amour.'),
+    ('Ps 45, 2',
+        'Dieu est pour nous refuge et force, secours dans la détresse, toujours offert.'),
+    ('Jr 29, 11',
+        'Je connais les projets que j\'ai formés sur vous — oracle du Seigneur — projets de paix et non de malheur, pour vous donner un avenir et une espérance.'),
+    ('Ga 5, 22-23',
+        'Le fruit de l\'Esprit est charité, joie, paix, longanimité, serviabilité, bonté, confiance dans les autres, douceur, maîtrise de soi.'),
     ('Matthieu 5:3',
         'Heureux les pauvres en esprit, car le royaume des cieux est à eux.'),
-    ('Psaume 118:24',
-        'C\'est ici la journée que l\'Éternel a faite : qu\'elle soit pour nous un sujet d\'allégresse et de joie.'),
-    ('Jean 8:12',
-        'Je suis la lumière du monde. Celui qui me suit ne marchera pas dans les ténèbres, mais il aura la lumière de la vie.'),
+    ('Ps 117, 24',
+        'Voici le jour que fit le Seigneur, qu\'il soit pour nous sujet d\'allégresse et de joie !'),
+    ('Jn 8, 12',
+        'Je suis la lumière du monde. Celui qui me suit ne marchera pas dans les ténèbres, il aura la lumière de la vie.'),
   ];
 
   (String, String) get _versetDuJour {
@@ -123,10 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
     '03-17': 'Saint Patrick',
     '03-19': 'Saint Joseph, époux de Marie',
     '03-25': 'Annonciation du Seigneur',
+    '04-16': 'Sainte Bernadette Soubirous',
     '04-23': 'Saint Georges',
     '04-29': 'Sainte Catherine de Sienne',
     '05-01': 'Saint Joseph Travailleur',
     '05-03': 'Saints Philippe et Jacques',
+    '05-13': 'Notre-Dame de Fatima',
     '05-14': 'Saint Matthias',
     '05-31': 'Visitation de la Vierge Marie',
     '06-13': 'Saint Antoine de Padoue',
@@ -218,12 +221,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icon(Icons.church_rounded,
                       size: 20, color: AppTheme.primary),
                   const SizedBox(width: 8),
-                  Text(
+                  AppTheme.goldText(
                     'Refuge',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.primary,
                       letterSpacing: -0.3,
                     ),
                   ),
@@ -280,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _PilgrimBanner(
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                         builder: (_) => const PilgrimageScreen(),
                       ),
                     ),
@@ -294,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           label: 'Églises',
                           subtitle: 'Trouver une messe',
                           onTap: () => Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => const ChurchesScreen())),
+                              CupertinoPageRoute(builder: (_) => const ChurchesScreen())),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -304,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           label: 'Liturgie',
                           subtitle: 'Textes du jour',
                           onTap: () => Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => const LiturgyScreen())),
+                              CupertinoPageRoute(builder: (_) => const LiturgyScreen())),
                         ),
                       ),
                     ],
@@ -443,24 +445,39 @@ class _VersetCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final inner = Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.fromLTRB(22, 20, 22, 22),
       decoration: BoxDecoration(
-        color: AppTheme.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20),
+        color: AppTheme.primary.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: AppTheme.primary.withValues(alpha: 0.20),
-          width: 0.5,
+          color: AppTheme.primary.withValues(alpha: 0.22),
+          width: 0.6,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
+          // Guillemet géant en fond
+          Positioned(
+            top: -8,
+            right: 0,
+            child: Text(
+              '\u00AB',
+              style: TextStyle(
+                fontSize: 110,
+                height: 1,
+                color: AppTheme.primary.withValues(alpha: 0.08),
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Badge label
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppTheme.primary.withValues(alpha: 0.15),
+                  color: AppTheme.primary.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(
@@ -469,48 +486,38 @@ class _VersetCard extends StatelessWidget {
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
                     color: AppTheme.primary,
-                    letterSpacing: 0.8,
+                    letterSpacing: 0.9,
                   ),
                 ),
               ),
+              const SizedBox(height: 18),
+              // Texte en serif
+              Text(
+                text,
+                style: AppTheme.serif(
+                  fontSize: 16,
+                  height: 1.75,
+                  color: Colors.white.withValues(alpha: 0.92),
+                  style: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Référence gold gradient
+              AppTheme.goldText(
+                reference,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.2,
+                ),
+              ),
             ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '«',
-            style: TextStyle(
-              fontSize: 40,
-              height: 0.8,
-              color: AppTheme.primary.withValues(alpha: 0.35),
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 16,
-              height: 1.6,
-              color: AppTheme.label,
-              fontStyle: FontStyle.italic,
-              letterSpacing: -0.1,
-            ),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            reference,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.primary,
-              letterSpacing: 0.2,
-            ),
           ),
         ],
       ),
     );
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(22),
       child: kIsWeb
           ? inner
           : BackdropFilter(
@@ -630,37 +637,87 @@ class _ArticleCard extends StatelessWidget {
   }
 }
 
-// ── Chargement ────────────────────────────────────────────
-class _NewsLoader extends StatelessWidget {
+// ── Skeleton loader animé ─────────────────────────────────
+class _NewsLoader extends StatefulWidget {
   const _NewsLoader();
+  @override
+  State<_NewsLoader> createState() => _NewsLoaderState();
+}
+
+class _NewsLoaderState extends State<_NewsLoader>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat();
+    _anim = Tween<double>(begin: -1.5, end: 2.5).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  Widget _bar(double w, double h) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Container(
+        width: w,
+        height: h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          gradient: LinearGradient(
+            begin: Alignment(_anim.value - 1, 0),
+            end: Alignment(_anim.value + 1, 0),
+            colors: [
+              Colors.white.withValues(alpha: 0.04),
+              Colors.white.withValues(alpha: 0.10),
+              Colors.white.withValues(alpha: 0.04),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: List.generate(
-          3,
-          (i) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.04),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.07),
-                      width: 0.5,
-                    ),
-                  ),
-                  child: const Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                          color: AppTheme.primary, strokeWidth: 1.5),
-                    ),
-                  ),
-                ),
-              )),
+      children: List.generate(3, (i) => Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.04),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.07),
+              width: 0.5,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _bar(double.infinity, 14),
+              const SizedBox(height: 8),
+              _bar(double.infinity, 12),
+              const SizedBox(height: 6),
+              _bar(200, 12),
+              const SizedBox(height: 12),
+              _bar(80, 10),
+            ],
+          ),
+        ),
+      )),
     );
   }
 }

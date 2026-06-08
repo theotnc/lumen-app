@@ -75,7 +75,7 @@ class LiturgicalDay {
     switch (color) {
       case 'violet': return const Color(0xFF9B59B6);
       case 'rouge':  return const Color(0xFFE74C3C);
-      case 'rose':   return const Color(0xFFE91E8C);
+      case 'rose':   return const Color(0xFFB565A7);
       case 'vert':   return const Color(0xFF27AE60);
       default:       return const Color(0xFFC9A844); // blanc → or
     }

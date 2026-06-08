@@ -76,7 +76,7 @@ class _AudioBibleScreenState extends State<AudioBibleScreen> {
                       ),
                     ),
                     child: const Text(
-                      'Louis Segond',
+                      'Crampon 1923',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,

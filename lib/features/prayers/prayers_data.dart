@@ -34,7 +34,7 @@ Amen.''',
     categorie: 'Classiques',
     description: '''Salutation à la Vierge Marie tirée de l'Évangile. La prière mariale la plus répandue au monde.''',
     contenu: '''Je vous salue, Marie,
-pleine de grâces ;
+pleine de grâce,
 le Seigneur est avec vous.
 Vous êtes bénie entre toutes les femmes
 et Jésus, le fruit de vos entrailles, est béni.
@@ -99,19 +99,26 @@ Amen.''',
     categorie: 'Classiques',
     description: '''Prière de pénitence récitée au début de la messe pour reconnaître ses fautes devant Dieu et l'assemblée.''',
     contenu: '''Je confesse à Dieu tout-puissant,
-et à vous, mes frères,
+à la bienheureuse Vierge Marie toujours vierge,
+à saint Michel Archange,
+à saint Jean-Baptiste,
+aux saints Apôtres Pierre et Paul,
+à tous les saints et à vous, mes frères,
 que j'ai péché
 en pensée, en parole, par action et par omission ;
 oui, j'ai vraiment péché.
 C'est ma faute, c'est ma faute,
 c'est ma très grande faute.
-C'est pourquoi je supplie la bienheureuse Vierge Marie,
-tous les anges et les saints,
-et vous aussi, mes frères,
+C'est pourquoi je supplie la bienheureuse Vierge Marie toujours vierge,
+saint Michel Archange, saint Jean-Baptiste,
+les saints Apôtres Pierre et Paul,
+tous les saints et vous, mes frères,
 de prier pour moi le Seigneur notre Dieu.
 
+Amen.
+
 ──────────────
-Forme ordinaire du Missel Romain (messes du dimanche).''',
+Missel Romain, 3e édition typique.''',
     longueur: 1,
   ),
 
@@ -186,6 +193,8 @@ Amen.''',
     description: '''Courte prière avant les repas pour rendre grâce à Dieu qui nourrit ses enfants.''',
     contenu: '''Bénissez-nous, Seigneur,
 ainsi que la nourriture que nous allons prendre.
+Donnez du pain à ceux qui ont faim
+et la faim du pain à ceux qui ont tout.
 
 Amen.''',
     longueur: 1,
@@ -206,7 +215,22 @@ tournez vers nous vos yeux miséricordieux.
 Et après cet exil, montrez-nous Jésus,
 le fruit béni de vos entrailles.
 Ô clémente, ô pieuse,
-ô douce Vierge Marie.''',
+ô douce Vierge Marie.
+
+V. Priez pour nous, sainte Mère de Dieu.
+R. Afin que nous devenions dignes des promesses de Jésus-Christ.
+
+Prions.
+Dieu tout-puissant et éternel,
+qui par la coopération du Saint-Esprit
+avez préparé le corps et l'âme de la glorieuse Vierge Marie
+pour en faire une demeure digne de votre Fils,
+accordez-nous que nous qui la célébrons avec joie,
+soyons, par sa juste intercession et sa sainte protection,
+délivrés des maux présents et de la mort éternelle.
+Par le même Jésus-Christ, notre Seigneur.
+
+Amen.''',
     longueur: 2,
   ),
 
@@ -302,7 +326,7 @@ mais daignez les écouter favorablement et les exaucer.
 Amen.
 
 ──────────────
-Prière attribuée à saint Bernard de Clairvaux (XIIe siècle).''',
+Auteur anonyme médiéval, popularisée par Claude Bernard (XVIIe siècle).''',
     longueur: 2,
   ),
 
@@ -311,11 +335,11 @@ Prière attribuée à saint Bernard de Clairvaux (XIIe siècle).''',
     titre: 'Sub Tuum Praesidium',
     categorie: 'Classiques',
     description: '''La plus ancienne prière à Marie connue, retrouvée sur un papyrus copte du IIIe siècle.''',
-    contenu: '''Sous l'abri de ta miséricorde,
+    contenu: '''Sous l'abri de votre miséricorde,
 nous nous réfugions, sainte Mère de Dieu.
-Ne méprise pas nos prières
+Ne méprisez pas nos prières
 quand nous sommes dans l'épreuve,
-mais de tout danger délivre-nous toujours,
+mais de tout danger délivrez-nous toujours,
 Vierge glorieuse et bénie.
 
 ──────────────
@@ -373,7 +397,7 @@ En toi, Seigneur, j'espère ;
 je ne serai pas confondu éternellement.
 
 ──────────────
-Hymne d'action de grâce attribué à saint Ambroise (IVe siècle).
+Hymne d'action de grâce traditionnellement attribué à saint Ambroise, probablement composé par Nicétas de Remesiana (IVe–Ve siècle).
 Chanté aux grandes fêtes et actions de grâce.''',
     longueur: 5,
   ),
@@ -857,7 +881,7 @@ Amen.''',
     id: 'priere-saint-michel',
     titre: 'Prière à saint Michel Archange',
     categorie: 'Prières des Saints',
-    description: '''Prière contre le mal composée par Léon XIII en 1886. Parfois récitée à la fin de certaines messes.''',
+    description: '''Prière contre le mal composée par Léon XIII après une vision en 1884, prescrite à la fin de la messe basse par décret de 1886. Parfois récitée à la fin de certaines messes.''',
     contenu: '''Saint Michel Archange,
 défendez-nous dans le combat ;
 soyez notre protecteur contre la malice
@@ -872,7 +896,7 @@ qui rôdent dans le monde pour la perte des âmes.
 Amen.
 
 ──────────────
-Prière ordonnée par Léon XIII en 1886 après une vision.
+Composée par Léon XIII après une vision en 1884, prescrite à la fin de la messe basse en 1886.
 Traditionnellement récitée à la fin de la messe basse.''',
     longueur: 2,
   ),
@@ -1143,15 +1167,15 @@ Fête le 22 mai.''',
     titre: 'Chapelet de la Divine Miséricorde',
     categorie: 'Prières des Saints',
     description: '''Révélé à sainte Faustine. Se récite de préférence à 15h, heure de la mort du Christ.''',
-    contenu: '''Chapelet révélé à sainte Faustine Kowalska, Cracovie 1935.
+    contenu: '''Chapelet révélé à sainte Faustine Kowalska à Vilnius, le 22 juin 1935.
 Se récite sur les grains du chapelet ordinaire.
 
 ──────────────
 DÉBUT
 
-Notre Père...
-Je vous salue Marie... (3 fois)
-Je crois en Dieu...
+Notre Père... (une fois)
+Je vous salue Marie... (une fois)
+Je crois en Dieu... (une fois)
 
 ──────────────
 SUR LES GRANDES PERLES (5 fois)
@@ -1368,9 +1392,9 @@ d'honorer votre souvenir avec gratitude
 et de faire connaître votre intercession
 à ceux qui sont dans le besoin.
 
-Faites usage de ce privilège spécial
-accordé à vous de porter aide visible et prompte
-là où l'aide est presque désespérée.
+Usez du privilège particulier qui vous a été accordé
+d'apporter une aide visible et prompte
+aux situations les plus désespérées.
 
 Amen.
 
@@ -1495,6 +1519,43 @@ Garde-moi de tout péché.
 — Que ta grâce m'accompagne.
 
 ──────────────
+LE BENEDICTUS (Luc 1, 68-79)
+
+Béni soit le Seigneur, le Dieu d'Israël,
+qui visite et rachète son peuple.
+Il nous a suscité une force qui nous sauve
+dans la maison de David, son serviteur.
+
+Ainsi, par la bouche de ses saints prophètes,
+il en avait parlé depuis les temps anciens :
+salut qui nous arrache à l'ennemi,
+à la main de tous nos oppresseurs.
+
+Il a fait miséricorde à nos pères,
+il s'est souvenu de son alliance sainte.
+Serment qu'il avait juré à Abraham notre père,
+de nous rendre sans crainte,
+afin que, délivrés de la main de nos ennemis,
+nous le servions dans la justice et la sainteté
+en sa présence, tout au long de nos jours.
+
+Et toi, le petit enfant, tu seras appelé prophète du Très-Haut :
+tu marcheras devant, à la face du Seigneur,
+et tu prépareras ses chemins
+pour donner à son peuple de connaître le salut
+par la rémission de ses péchés.
+
+Grâce à la tendresse, à l'amour de notre Dieu,
+quand nous visite l'astre d'en haut,
+pour illuminer ceux qui habitent les ténèbres
+et l'ombre de la mort,
+pour conduire nos pas au chemin de la paix.
+
+Gloire au Père, au Fils et au Saint-Esprit,
+comme il était au commencement,
+maintenant et toujours, dans les siècles des siècles. Amen.
+
+──────────────
 BÉNÉDICTION FINALE
 
 Que le Seigneur nous bénisse et nous garde.
@@ -1548,8 +1609,14 @@ Il renverse les puissants de leurs trônes,
 il élève les humbles.
 Il comble de biens les affamés,
 renvoie les riches les mains vides.
+Il est venu en aide à Israël son serviteur,
+il s'est souvenu de son amour,
+de la promesse faite à nos pères,
+en faveur d'Abraham et de sa descendance à jamais.
 
-Gloire au Père, au Fils et au Saint-Esprit. Amen.
+Gloire au Père, au Fils et au Saint-Esprit,
+comme il était au commencement,
+maintenant et toujours, dans les siècles des siècles. Amen.
 
 ──────────────
 Salve Regina...''',
@@ -1802,7 +1869,7 @@ Sainte Anne, priez pour nous. Amen.''',
     id: 'priere-saint-christophe',
     titre: 'Prière à Saint Christophe',
     categorie: 'Prières des Saints',
-    description: 'Patron des voyageurs, saint Christophe est invoqué pour la protection sur la route et en voyage.',
+    description: 'Patron traditionnel des voyageurs. Sa fête a été retirée du Calendrier romain général en 1969, mais sa dévotion populaire reste très vivace en France et en Europe.',
     contenu: '''Saint Christophe, patron des voyageurs,
 vous qui avez porté l'Enfant-Jésus sur vos épaules,
 portez-nous aussi dans votre cœur
@@ -1876,7 +1943,7 @@ Amen.''',
     categorie: 'Occasions',
     description: 'Intercéder pour la paix dans le monde, dans les familles et dans les cœurs.',
     contenu: '''Dieu de paix et d'amour,
-vous qui avez dit : « Ma paix, je vous la donne »,
+vous qui avez dit : « Je vous laisse la paix, je vous donne ma paix » (Jn 14, 27),
 répandez votre paix sur notre monde blessé.
 
 Arrêtez les guerres.
