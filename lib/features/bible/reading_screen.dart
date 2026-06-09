@@ -39,6 +39,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   @override
   void dispose() {
+    if (_scrollController.hasClients) {
+      BibleProgressService().saveScrollOffset(widget.book.id, _scrollController.offset);
+    }
     _scrollController.dispose();
     super.dispose();
   }
@@ -60,11 +63,18 @@ class _ReadingScreenState extends State<ReadingScreen> {
       _loading = false;
     });
 
-    if (widget.initialChapter > 1) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _scrollToChapter(widget.initialChapter, animate: false);
-      });
-    }
+    // Restaure la position exacte après que Flutter a terminé le layout
+    Future.delayed(const Duration(milliseconds: 150), () async {
+      if (!mounted) return;
+      final savedOffset = await BibleProgressService().getScrollOffset(widget.book.id);
+      if (!mounted) return;
+      if (savedOffset != null && savedOffset > 0 && _scrollController.hasClients) {
+        final max = _scrollController.position.maxScrollExtent;
+        _scrollController.jumpTo(savedOffset.clamp(0.0, max));
+      } else if (widget.initialChapter > 1) {
+        _scrollToChapter(widget.initialChapter, animate: false);
+      }
+    });
   }
 
   void _onScroll() {
@@ -94,35 +104,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   void _scrollToChapter(int chNum, {bool animate = true}) {
     if (chNum < 1 || chNum > _chapterKeys.length) return;
-
-    // Si le chapitre est déjà dans le viewport, on l'utilise directement
     final ctx = _chapterKeys[chNum - 1].currentContext;
-    if (ctx != null) {
-      Scrollable.ensureVisible(ctx,
-        duration: animate ? const Duration(milliseconds: 350) : Duration.zero,
-        curve: Curves.easeInOut,
-        alignment: 0.0,
-      );
-      return;
-    }
-
-    // Chapitre hors-écran : saut estimé basé sur le nombre de versets
-    if (!_scrollController.hasClients || _passages.isEmpty) return;
-    double estimatedOffset = 0;
-    for (int i = 0; i < chNum - 1 && i < _passages.length; i++) {
-      final verseCount = '\n\n'.allMatches(_passages[i].content).length + 1;
-      estimatedOffset += 88 + verseCount * _fontSize * 1.9 * 2.2;
-    }
-    _scrollController.jumpTo(estimatedOffset);
-
-    // Affinage après le prochain frame (le chapitre est maintenant proche)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final ctx2 = _chapterKeys[chNum - 1].currentContext;
-      if (ctx2 != null) {
-        Scrollable.ensureVisible(ctx2, duration: Duration.zero, alignment: 0.0);
-      }
-    });
+    if (ctx == null) return;
+    Scrollable.ensureVisible(
+      ctx,
+      duration: animate ? const Duration(milliseconds: 350) : Duration.zero,
+      curve: Curves.easeInOut,
+      alignment: 0.0,
+    );
   }
 
   void _openChapterSheet() {
@@ -236,9 +225,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
             else
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 140),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    List.generate(_chapters.length, _buildChapter),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(_chapters.length, _buildChapter),
                   ),
                 ),
               ),

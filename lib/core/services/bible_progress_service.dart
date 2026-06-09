@@ -60,4 +60,28 @@ class BibleProgressService {
   /// Nombre total de chapitres lus (tous testaments).
   Future<int> totalRead() async => (await _getDone()).length;
 
+  // ── Position de défilement exacte ─────────────────────────
+
+  static const _keyScroll = 'bible_scroll';
+
+  Future<void> saveScrollOffset(String bookId, double offset) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_keyScroll);
+    final map = raw != null ? Map<String, dynamic>.from(jsonDecode(raw)) : <String, dynamic>{};
+    map[bookId] = offset;
+    await prefs.setString(_keyScroll, jsonEncode(map));
+  }
+
+  Future<double?> getScrollOffset(String bookId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_keyScroll);
+    if (raw == null) return null;
+    try {
+      final map = jsonDecode(raw) as Map<String, dynamic>;
+      final v = map[bookId];
+      if (v == null) return null;
+      return (v as num).toDouble();
+    } catch (_) { return null; }
+  }
+
 }
