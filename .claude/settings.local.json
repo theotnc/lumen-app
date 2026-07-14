@@ -32,7 +32,8 @@
       "Bash(python3 -m pip install graphifyy)",
       "Bash(cp \"/root/.claude/uploads/142b6105-e3c5-5f03-a3d6-a5be6f5737ac/808e4071-SPEC.md\" /workspace/braise/docs/SPEC.md)",
       "Bash(cp \"/root/.claude/uploads/142b6105-e3c5-5f03-a3d6-a5be6f5737ac/ed3c0ee2-braisedesigncomplet.html\" /workspace/braise/docs/design/braise-design-complet.html)",
-      "Read(//workspace/braise/docs/**)"
+      "Read(//workspace/braise/docs/**)",
+      "mcp__bf7c680d-5fdc-5ef4-b4a0-abadb619bf0a__add_repo"
     ]
   }
 }
